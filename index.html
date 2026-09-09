@@ -55,31 +55,207 @@
     </script>
   
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Ship Name Generator",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Any",
-    "description": "Combine two names into a cute ship name. Free, no sign-up, works in your browser.",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+
+<!-- ============ HOWTO ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "@id": "https://shipnames.cc/#howto",
+  "name": "How to Use Ship Name Generator",
+  "description": "The whole thing takes about ten seconds, but a few small choices change your results a lot. Here is the flow, step by step.",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Enter Both Names",
+      "text": "Start by typing the two names into the first and second boxes. These can be a couple, two fictional characters, a celebrity pair, or you and your best friend. One tip that trips people up: the order matters. \"Alex and Emma\" and \"Emma and Alex\" produce different blends, so if the first batch feels off, swap them and generate again."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Select Your Style",
+      "text": "Next, pick the vibe. Cute leans soft and playful, Elegant keeps things clean and grown-up, Funny goes for a laugh, and Fantasy adds a storybook flourish. There is also a Short & Viral option that keeps names punchy for handles and hashtags. The style is doing real work here, so it is worth trying two or three before you settle."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Pick a Relationship or Try an Example",
+      "text": "Choose the relationship or purpose that fits, from a romantic couple to a brand or team name, so the label on each result matches your use. In a hurry? Tap one of the example pairs above the names and the tool fills both boxes and generates instantly, so you can see how it works before typing your own."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Generate Your Ship Name",
+      "text": "Hit the generate button and your seven names appear on the right, each ready to copy with one tap. Not in love with the batch? Change a name, switch the style, or press generate again for a completely fresh set. There is no limit, so keep going until one of them just feels right."
+    }
+  ]
+}
+</script>
+
+  <!-- ============ WEBPAGE ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://shipnames.cc/#webpage",
+  "url": "https://shipnames.cc/",
+  "name": "Ship Name Generator - Free Instant Couple & Fandom Names",
+  "description": "Use our free Ship Name Generator to combine two names into a cute ship name. Pick a style, choose a category, and get seven shareable couple name ideas instantly.",
+  "isPartOf": {
+    "@id": "https://shipnames.cc/#website"
+  },
+  "about": {
+    "@id": "https://shipnames.cc/#webapp"
+  },
+  "mainEntity": {
+    "@id": "https://shipnames.cc/#webapp"
+  },
+  "primaryImageOfPage": {
+    "@id": "https://shipnames.cc/#primaryimage"
+  },
+  "publisher": {
+    "@id": "https://shipnames.cc/#organization"
+  },
+  "inLanguage": "en"
+}
+</script>
+
+
+  <!-- ============ WEBSITE ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://shipnames.cc/#website",
+  "url": "https://shipnames.cc/",
+  "name": "Ship Names",
+  "description": "Use our free Ship Name Generator to combine two names into a cute ship name. Pick a style, choose a category, and get seven shareable couple name ideas instantly.",
+  "publisher": {
+    "@id": "https://shipnames.cc/#organization"
+  },
+  "inLanguage": "en"
+}
+</script>
+
+  <!-- ============ ORGANIZATION ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://shipnames.cc/#organization",
+  "name": "Ship Names",
+  "url": "https://shipnames.cc/"
+}
+</script>
+
+  <!-- ============ ARTICLE ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "@id": "https://shipnames.cc/#article",
+  "url": "https://shipnames.cc/",
+  "headline": "Ship Name Generator - Free Instant Couple & Fandom Names",
+  "description": "Use our free Ship Name Generator to combine two names into a cute ship name. Pick a style, choose a category, and get seven shareable couple name ideas instantly.",
+  "mainEntityOfPage": {
+    "@id": "https://shipnames.cc/#webpage"
+  },
+  "image": {
+    "@id": "https://shipnames.cc/#primaryimage"
+  },
+  "publisher": {
+    "@id": "https://shipnames.cc/#organization"
+  },
+  "inLanguage": "en"
+}
+</script>
+  
+
+<!-- ============ WEB APPLICATION ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": "https://shipnames.cc/#webapp",
+  "name": "Ship Name Generator",
+  "url": "https://shipnames.cc/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "description": "Use our free Ship Name Generator to combine two names into a cute ship name. Pick a style, choose a category, and get seven shareable couple name ideas instantly.",
+  "browserRequirements": "Requires JavaScript enabled",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@id": "https://shipnames.cc/#organization"
   }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      { "@type": "Question", "name": "What exactly is a ship name or 'shipping'?", "acceptedAnswer": { "@type": "Answer", "text": "Shipping means wanting two people or characters to be together as a couple. A ship name is the blended nickname fans give that pairing by mixing both names into one word." } },
-      { "@type": "Question", "name": "Can I use this tool to create names for my future babies?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Plenty of people blend their own two names for baby-name inspiration. Treat the results as a starting point and say them out loud before deciding." } },
-      { "@type": "Question", "name": "Is there a cost to use the Ship Name Generator?", "acceptedAnswer": { "@type": "Answer", "text": "No. It is completely free with no account, no sign-up, and no limits on how many names you generate." } },
-      { "@type": "Question", "name": "How can I get the best ship name results?", "acceptedAnswer": { "@type": "Answer", "text": "Try both name orders and switch between styles. Small changes to the inputs produce very different blends." } },
-      { "@type": "Question", "name": "Can I save the ship names I generate?", "acceptedAnswer": { "@type": "Answer", "text": "Tap the copy button on any result to grab it, then paste it wherever you like. There is no saved history, so keep the ones you love." } },
-      { "@type": "Question", "name": "How many ship name options will I receive?", "acceptedAnswer": { "@type": "Answer", "text": "Every generation gives you seven different ship names, plus a fun compatibility score for the pair." } }
-    ]
-  }
-  </script>
+}
+</script>
+
+
+<!-- ============ FAQ PAGE ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://shipnames.cc/#faq",
+  "url": "https://shipnames.cc/#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What exactly is a ship name or \"shipping\"?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Shipping is when fans or people imagine two people or characters as a pair or couple. The word \"ship\" comes from \"relationship.\" A ship name is a blended nickname made by combining parts of both names into one, such as Alex and Emma becoming Alemma."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use the Ship Name Generator for baby-name ideas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The Ship Name Generator can give you creative ideas by blending two names together. If you find a blend you like, say it out loud and check how it looks and sounds as a real first name before considering it further."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is the Ship Name Generator free to use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, the Ship Name Generator is completely free to use. You don't need to create an account or sign up before generating names, so you can enter your names and start exploring blends right away."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How can I get better results from the Ship Name Generator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Start by trying different name combinations and styles. You can also change the order of the names or choose a different category to explore new results. If the first batch doesn't feel right, generate another set and compare your favorites."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I save the ship names I generate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, you can keep your favorite results by using the copy button and saving them wherever you want, such as your notes or a document. The Ship Name Generator doesn't keep a personal history of your generated names, so copying your favorites is the easiest way to save them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many ship name options will I receive?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Ship Name Generator gives you seven ship name options in each batch, along with a playful compatibility score for the pair. If none of the results feel right, simply generate again to get a fresh set of seven names."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body data-page="home">
   <a class="skip-link" href="#generator">Skip to generator</a>
