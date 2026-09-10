@@ -1,0 +1,48 @@
+<header class="site-header">
+  <div class="container">
+    <div class="nav">
+
+      <a class="brand" href="/" aria-label="Ship Names home">
+        <span class="brand__mark">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+          </svg>
+        </span>
+        <span>Ship Names</span>
+      </a>
+
+      <ul class="nav__links">
+        <li><a href="/" data-nav-key="home">Home</a></li>
+        <li><a href="/#generator" data-nav-key="generator">Generator</a></li>
+        <li><a href="/blog.html" data-nav-key="blog">Blog</a></li>
+        <li><a href="/about.html" data-nav-key="about">About</a></li>
+        <li><a href="/contact.html" data-nav-key="contact">Contact</a></li>
+      </ul>
+
+      <a class="btn btn--primary nav__cta" href="/#generator">Generate Now</a>
+
+      <button
+        class="nav__toggle"
+        id="navToggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobileNav"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M3 6h18M3 12h18M3 18h18"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <div class="nav__mobile" id="mobileNav">
+    <a href="/">Home</a>
+    <a href="/#generator">Generator</a>
+    <a href="/blog.html">Blog</a>
+    <a href="/about.html">About</a>
+    <a href="/contact.html">Contact</a>
+    <a class="btn btn--primary" href="/#generator">Generate Now</a>
+  </div>
+</header>
