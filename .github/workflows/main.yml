@@ -1,0 +1,39 @@
+name: Build Static HTML
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build header and footer into HTML pages
+        run: python build.py
+
+      - name: Commit generated HTML
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add '*.html'
+
+          if git diff --cached --quiet; then
+            echo "No generated HTML changes."
+          else
+            git commit -m "Build static header and footer [skip ci]"
+            git push
+          fi
