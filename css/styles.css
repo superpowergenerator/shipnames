@@ -299,6 +299,12 @@ h4 {
   color: var(--pink);
 }
 
+.brand__mark img {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
 .nav__links {
   display: none;
   align-items: center;
@@ -1492,31 +1498,6 @@ table.data tbody tr:last-child td {
 
 .footer__col a:hover {
   color: var(--pink-dark);
-}
-
-.footer__social {
-  display: flex;
-  gap: 8px;
-
-  margin-top: 15px;
-}
-
-.footer__social a {
-  display: grid;
-  place-items: center;
-
-  width: 36px;
-  height: 36px;
-
-  border: 1px solid var(--border);
-  border-radius: 50%;
-
-  background: var(--soft);
-}
-
-.footer__social svg {
-  width: 16px;
-  height: 16px;
 }
 
 .footer__bottom {

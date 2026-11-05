@@ -95,6 +95,7 @@
       onset(n) || head(n, 2),
       head(n, 2),
       head(n, 3),
+      head(n, 4), // "bran" (brad) -> Brangelina = bran + gelina
       firstSyl(n),
       n, // whole name (Kim + ye -> Kimye, Alex + ma -> Alexma)
     ]);
@@ -105,6 +106,7 @@
     return uniq([
       tail(n, 2),
       tail(n, 3),
+      tail(n, 4),
       lastSyl(n),
       last2Syl(n),
       rime(n),
@@ -142,6 +144,23 @@
     };
     cross(a, b);
     cross(b, a);
+    // Substring crossing: any chunk of one name + any chunk of the other.
+    // This is what finds blends the fixed part-lists miss (e.g. "lex" + "lex"
+    // for two identical names). The quality gate below does the filtering.
+    const subCross = (n1, n2) => {
+      for (let i = 0; i < n1.length; i++) {
+        for (let j = i + 2; j <= n1.length; j++) {
+          const f = n1.slice(i, j);
+          for (let k = 0; k < n2.length; k++) {
+            for (let l = k + 2; l <= n2.length; l++) {
+              out.push(f + n2.slice(k, l));
+            }
+          }
+        }
+      }
+    };
+    subCross(a, b);
+    subCross(b, a);
     out.push(overlapMerge(a, b));
     out.push(overlapMerge(b, a));
     return out;
@@ -167,6 +186,15 @@
      STEP 4 — quality gate: reject anything unsayable, random, or junky.
      ===================================================================== */
 
+  // English word-initial consonant clusters that can actually be said.
+  // Anything else starting with two consonants (e.g. "hm" in Hmione, "tv"
+  // in Tvis) is unpronounceable and is rejected.
+  const ALLOWED_ONSETS = new Set([
+    "br", "bl", "cr", "cl", "dr", "fl", "fr", "gl", "gr", "pl", "pr",
+    "tr", "st", "sp", "sc", "sh", "ch", "th", "wh", "ph", "sm", "sn",
+    "sw", "tw", "qu", "str", "spr", "scr", "spl", "chr", "sch", "thr",
+  ]);
+
   function pronounceable(w) {
     if (!w || w.length < 4 || w.length > 12) return false; // brief: 4..12 chars
     if (!/[aeiou]/.test(w)) return false;
@@ -174,6 +202,9 @@
     if (/[aeiou]{3,}/.test(w)) return false; // no 3 vowels together
     if (/([a-z])\1\1/.test(w)) return false; // no triple letters
     if (/^[bcdfghjklmnpqrstvwxyz]{2}[bcdfghjklmnpqrstvwxyz]/.test(w)) return false;
+    // A blend must not START with an unpronounceable consonant cluster.
+    const start2 = w.slice(0, 2);
+    if (/^[bcdfghjklmnpqrstvwxyz]{2}/.test(w) && !ALLOWED_ONSETS.has(start2)) return false;
     if (/(xx|zz|qq|jj|vv|kk|xz|zx|qx)/.test(w)) return false; // password-ish junk
     if (/[jqvw]$/.test(w)) return false; // only truly awkward hard endings (keep x/z/k/h: Alex, Noah)
     // every 3-letter window must contain a vowel (keeps it sayable end-to-end)
@@ -183,9 +214,34 @@
     return true;
   }
 
+  // A blend must genuinely come from BOTH names: it must split into a front
+  // part (at least 2 letters) that occurs in one name and a back part
+  // (at least 2 letters) that occurs in the other, covering at least
+  // `minTotal` letters in total. This rejects one-letter contributions
+  // ("Hone": only "h" from Harry) and too-thin blends ("Hane": 2 + 2).
+  // When both names are the same (Alex + Alex), both parts must occur in
+  // that one name instead.
+  function contributionOk(w, a, b, minTotal) {
+    const splitOk = (x, y) => {
+      for (let k = 2; k <= w.length - 2; k++) {
+        const front = w.slice(0, k);
+        const back = w.slice(k);
+        if (front.length + back.length < minTotal) continue;
+        if (x.indexOf(front) !== -1 && y.indexOf(back) !== -1) return true;
+      }
+      return false;
+    };
+    if (a === b) return splitOk(a, a);
+    return splitOk(a, b) || splitOk(b, a);
+  }
+
   // A blend must not simply be one full name, nor both names stuck together.
   function validBlend(w, a, b) {
     if (w === a || w === b) return false;
+    // Same name twice (Alex + Alex): "contains the name" is meaningless,
+    // since every blend is built from that one name. Only the exact name
+    // itself, and the name simply repeated (Alexalex), are rejected.
+    if (a === b) return w !== a + a;
     if (w.indexOf(a) !== -1 && w.indexOf(b) !== -1) return false; // e.g. "alexemma"
     return true;
   }
@@ -393,35 +449,68 @@
     const count = opts.count || 7;
     const batch = Math.max(0, opts.batch | 0);
 
-    if (a.length < 1 || b.length < 1) {
-      return { ok: false, error: "Please enter two names.", results: [] };
+    if (a.length < 2 || b.length < 2) {
+      return { ok: false, error: "Please enter two names with at least 2 letters each.", results: [] };
     }
 
     const sc = compatibility(a, b);
     const label = CATEGORY_LABEL[category] || "Ship";
 
     // Build, repair, gate, score.
+    // Dedupe on a "squashed" key (doubled letters collapsed) so near-identical
+    // twins such as Alemma / Alema or Emmex / Emex never appear together.
+    const squash = (w) => w.replace(/([a-z])\1+/g, "$1");
     const seen = new Set();
-    const scored = [];
+    const scored = []; // strict tier: real contribution from both names
+    const loose = []; // fallback tier: thinner blends, used only if the strict pool runs short
     for (const raw of buildCandidates(a, b)) {
       if (!raw) continue;
       const w = repair(raw);
       if (!pronounceable(w)) continue;
       if (!validBlend(w, a, b)) continue;
-      if (seen.has(w)) continue;
-      seen.add(w);
+      const key = squash(w);
+      if (seen.has(key)) continue;
+      seen.add(key);
 
-      const q = score(w, a, b) + styleBonus(w, style) + purposeBonus(w, category);
-      scored.push({ name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q });
+      // Anchoring bonus: a real ship name starts with the START of one name
+      // and ends with the END of the other (Brangelina, Kimye, Tayvis).
+      // Mid-name fragments ("Radina", "Inara", "Adeli") pass the
+      // contribution test but feel random, so they rank below anchored blends.
+      let anchor = 0;
+      for (const [x, y] of [[a, b], [b, a]]) {
+        let s = 0;
+        if (w.startsWith(x.slice(0, 3))) s += 15;
+        else if (w.startsWith(x.slice(0, 2))) s += 8;
+        if (w.endsWith(y.slice(-3))) s += 10;
+        else if (w.endsWith(y.slice(-2))) s += 5;
+        // Strong anchor: starts with the first 3 letters of one name AND
+        // ends with the last 3 letters of the other. That is the shape of
+        // the famous blends (Brangelina = bra + lina, Tayvis = tay + vis),
+        // and it must outrank mid-name fragments even when the fragment
+        // scores well on length and vowel alternation alone.
+        if (w.startsWith(x.slice(0, 3)) && w.endsWith(y.slice(-3))) s += 45;
+        anchor = Math.max(anchor, s);
+      }
+      const q = score(w, a, b) + styleBonus(w, style) + purposeBonus(w, category) + anchor;
+      const item = { name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q };
+      if (contributionOk(w, a, b, 5)) scored.push(item);
+      else if (contributionOk(w, a, b, 4)) loose.push(item);
     }
 
-    // Rank best-first, keep variety, then page so "Generate again" shows more.
+    // Rank best-first, keep variety, then page so "Generate again" shows
+    // the next tier. Strict names come first; loose names only top up.
     scored.sort((x, y) => y.q - x.q);
-    const ranked = diversify(scored);
+    loose.sort((x, y) => y.q - x.q);
+    const ranked = diversify(scored).concat(
+      diversify(loose).filter((x) => scored.indexOf(x) === -1)
+    );
 
-    let start = ranked.length ? (batch * count) % ranked.length : 0;
-    let page = ranked.slice(start, start + count);
-    if (page.length < count) page = page.concat(ranked.slice(0, count - page.length));
+    // Non-overlapping pages: batch N never repeats a name from an earlier
+    // batch in the same cycle. Once every name has been shown, the cycle
+    // restarts from the top instead of wrapping mid-page with duplicates.
+    const pages = Math.max(1, Math.ceil(ranked.length / count));
+    const pageIdx = batch % pages;
+    const page = ranked.slice(pageIdx * count, pageIdx * count + count);
 
     const results = page.map((x) => ({ name: x.name, label: label, score: x.score }));
 

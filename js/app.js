@@ -281,6 +281,7 @@
 
     if (!out.ok) {
       showError(out.error);
+      renderResults([]); // clear any stale results from a previous generate
       return;
     }
     showError("");
