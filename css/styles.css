@@ -2533,8 +2533,9 @@ body[data-page="home"] .footer__bottom a {
 /* =========================================================
    37. BLOG REDESIGN (article pages only, CSS only)
    Scoped to body[data-page="blog"]:has(.container.prose) so the homepage keeps
-   its own look AND the blog index (blog.html, which has no .prose)
-   keeps its original design. No content changes. Breaks up the wall of
+   its own look AND the blog index (blog.html, which has only a plain
+   .prose closing line, not a .container.prose article body) keeps its
+   original design. No content changes. Breaks up the wall of
    text: clearer section breaks, airier type, scannable
    lists, and cards for takeaways, notes, FAQs and guides.
    ========================================================= */
