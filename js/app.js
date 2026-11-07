@@ -232,18 +232,32 @@
 
   function renderResults(results) {
     const list = el("results");
-    const empty = el("resultsEmpty");
     if (!list) return;
 
     list.innerHTML = "";
-    if (!results.length) return;
-
-    if (empty) empty.hidden = true;
+    if (!results.length) {
+      list.hidden = true;
+      return;
+    }
     list.hidden = false;
 
-    results.forEach(function (item, i) {
-      list.appendChild(resultCard(item, i));
-    });
+    // Top pick: the first (best-scoring) name, featured on its own row.
+    const top = document.createElement("div");
+    top.className = "result-top";
+    top.innerHTML = '<span class="result-top__badge">Top pick</span>';
+    top.appendChild(resultCard(results[0], 0));
+    list.appendChild(top);
+
+    // The rest in a 3-per-row grid.
+    const rest = results.slice(1);
+    if (rest.length) {
+      const grid = document.createElement("div");
+      grid.className = "results__grid";
+      rest.forEach(function (item, i) {
+        grid.appendChild(resultCard(item, i + 1));
+      });
+      list.appendChild(grid);
+    }
 
     // Announce for assistive tech.
     const live = el("resultsLive");
@@ -287,12 +301,9 @@
     showError("");
     renderCompat(out.compatibility);
     renderResults(out.results);
-
-    // On mobile, bring results into view.
+    // Bring the results into view.
     const panel = el("resultsPanel");
-    if (panel && global.matchMedia && global.matchMedia("(max-width: 900px)").matches) {
-      panel.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function init() {

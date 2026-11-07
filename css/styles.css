@@ -405,6 +405,10 @@ h4 {
   text-align: left;
 }
 
+.hero .container {
+  max-width: 1200px;
+}
+
 .hero__badge {
   display: inline-flex;
   align-items: center;
@@ -626,36 +630,52 @@ h4 {
   flex-direction: column;
 }
 
-.results__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 250px;
-
-  color: var(--text-muted);
-
-  text-align: center;
+.results__list {
+  display: grid;
+  gap: 10px;
 }
 
-.results__empty svg {
-  width: 55px;
-  height: 55px;
-
-  margin-bottom: 12px;
-
-  color: #c9c3ce;
-}
-
-.results__empty[hidden],
 .results__list[hidden] {
   display: none;
 }
 
-.results__list {
+.results__grid {
   display: grid;
   gap: 10px;
+}
+
+.result-top {
+  margin-bottom: 2px;
+}
+
+.result-top__badge {
+  display: inline-block;
+
+  margin-bottom: 8px;
+  padding: 4px 10px;
+
+  border-radius: 50px;
+
+  background: var(--pink);
+  color: #fff;
+
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.result-top .result-card {
+  background: var(--pink-light);
+  border-color: var(--pink);
+}
+
+.result-top .result-card__name {
+  font-size: 22px;
+}
+
+.results-section {
+  padding: 32px 0 48px;
 }
 
 
@@ -1818,6 +1838,10 @@ textarea.field__input {
   .hero__subtitle {
     margin-left: 0;
     margin-right: 0;
+  }
+
+  .results__grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .nav__links {
