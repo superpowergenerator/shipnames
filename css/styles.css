@@ -648,6 +648,11 @@ h4 {
   color: #c9c3ce;
 }
 
+.results__empty[hidden],
+.results__list[hidden] {
+  display: none;
+}
+
 .results__list {
   display: grid;
   gap: 10px;
@@ -708,13 +713,14 @@ h4 {
 
   margin-top: 6px;
 
-  background: #fff;
+  background: var(--pink-light);
   border-radius: 5px;
 
   overflow: hidden;
 }
 
 .compat__fill {
+  display: block;
   height: 100%;
 
   background: var(--pink);
