@@ -2816,44 +2816,9 @@ body[data-page="blog"] .cta-banner .btn--primary:hover {
   color: var(--pink-dark);
 }
 
-/* Keep reading cards: real cards with a hover lift */
-body[data-page="blog"] .blog-card {
-  overflow: hidden;
-
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-body[data-page="blog"] .blog-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 32px rgba(36, 26, 32, 0.1);
-}
-
-body[data-page="blog"] .blog-card__img {
-  margin-bottom: 0;
-
-  border-radius: 0;
-}
-
-body[data-page="blog"] .blog-card__tag {
-  margin: 14px 16px 8px;
-}
-
-body[data-page="blog"] .blog-card h3 {
-  margin: 0 16px 8px;
-}
-
-body[data-page="blog"] .blog-card__more {
-  margin: 0 16px 16px;
-  padding-top: 0;
-}
-
-body[data-page="blog"] .blog-card:hover h3 {
-  color: var(--pink-dark);
-}
+/* Keep reading cards: reverted to the original style (user
+   preferred the old plain look over the card version). No
+   blog-scope overrides here, so the base .blog-card rules apply. */
 
 @media (min-width: 880px) {
   body[data-page="blog"] .prose > ul {
