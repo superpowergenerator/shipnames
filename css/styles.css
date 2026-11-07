@@ -2889,3 +2889,11 @@ body[data-page="blog"] .blog-card:hover h3 {
     font-size: 18px;
   }
 }
+
+/* Sticky header: frosted like the homepage, so page text never
+   shows through it while scrolling (blog pages only) */
+body[data-page="blog"] .site-header {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 var(--border);
+}
