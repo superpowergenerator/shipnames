@@ -327,70 +327,63 @@
 
   <main>
     <!-- ============ HERO ============ -->
-    <section class="hero">
-      <div class="container">
-        <span class="hero__badge"><span data-icon="sparkles" data-icon-size="15"></span> Free · No sign-up</span>
-        <h1 class="hero__title">Ship Name Generator</h1>
-        <p class="hero__subtitle">Combine two names into one cute ship name. Pick a style and get seven shareable ideas in a single click.</p>
-        <div class="hero__actions">
-          <a class="btn btn--primary btn--lg" href="#generator">Start Generating</a>
-          <a class="btn btn--ghost btn--lg" href="#how">See how it works</a>
+    <section class="hero" id="generator">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <span class="hero__badge"><span data-icon="sparkles" data-icon-size="15"></span> Free · No sign-up</span>
+          <h1 class="hero__title">Ship Name Generator</h1>
+          <p class="hero__subtitle">Combine two names into one cute ship name. Pick a style and get seven shareable ideas in a single click.</p>
         </div>
+        <form class="panel hero__form" id="generatorForm" novalidate>
+          <h3 class="panel__title"><span data-icon="heartFill" data-icon-size="20"></span> Enter your two names</h3>
+
+          <div class="names-row">
+            <div class="field">
+              <label class="field__label" for="name1">First name</label>
+              <input class="field__input" type="text" id="name1" name="name1" placeholder="Enter first name" autocomplete="off" maxlength="20" />
+            </div>
+            <div class="names-row__amp" aria-hidden="true"><span data-icon="heartFill" data-icon-size="20"></span></div>
+            <div class="field">
+              <label class="field__label" for="name2">Second name</label>
+              <input class="field__input" type="text" id="name2" name="name2" placeholder="Enter second name" autocomplete="off" maxlength="20" />
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field__label" id="exampleLabel">Try an example <span class="field__hint">(tap to fill)</span></span>
+            <div class="chips" id="exampleChips" aria-labelledby="exampleLabel"></div>
+          </div>
+
+          <div class="field">
+            <span class="field__label" id="catLabel">Relationship / purpose</span>
+            <div class="chips" id="categoryChoices" role="radiogroup" aria-labelledby="catLabel"></div>
+          </div>
+
+          <div class="field">
+            <span class="field__label" id="styleLabel">Style</span>
+            <div class="chips" id="styleChoices" role="radiogroup" aria-labelledby="styleLabel"></div>
+          </div>
+
+          <p class="form-error" id="formError" role="alert" hidden></p>
+
+          <button class="btn btn--primary btn--block btn--lg" type="submit">Generate Ship Names <span data-icon="heartFill" data-icon-size="16"></span></button>
+        </form>
       </div>
     </section>
 
-    <!-- ============ GENERATOR ============ -->
-    <section class="section section--surface" id="generator">
-      <div class="container">
-        <div class="generator__grid">
-          <!-- LEFT: form -->
-          <form class="panel" id="generatorForm" novalidate>
-            <h3 class="panel__title"><span data-icon="heartFill" data-icon-size="20"></span> Enter your two names</h3>
-
-            <div class="names-row">
-              <div class="field">
-                <label class="field__label" for="name1">First name</label>
-                <input class="field__input" type="text" id="name1" name="name1" placeholder="Enter first name" autocomplete="off" maxlength="20" />
-              </div>
-              <div class="names-row__amp" aria-hidden="true"><span data-icon="heartFill" data-icon-size="20"></span></div>
-              <div class="field">
-                <label class="field__label" for="name2">Second name</label>
-                <input class="field__input" type="text" id="name2" name="name2" placeholder="Enter second name" autocomplete="off" maxlength="20" />
-              </div>
-            </div>
-
-            <div class="field">
-              <span class="field__label" id="exampleLabel">Try an example <span class="field__hint">(tap to fill)</span></span>
-              <div class="chips" id="exampleChips" aria-labelledby="exampleLabel"></div>
-            </div>
-
-            <div class="field">
-              <span class="field__label" id="catLabel">Relationship / purpose</span>
-              <div class="chips" id="categoryChoices" role="radiogroup" aria-labelledby="catLabel"></div>
-            </div>
-
-            <div class="field">
-              <span class="field__label" id="styleLabel">Style</span>
-              <div class="chips" id="styleChoices" role="radiogroup" aria-labelledby="styleLabel"></div>
-            </div>
-
-            <p class="form-error" id="formError" role="alert" hidden></p>
-
-            <button class="btn btn--primary btn--block btn--lg" type="submit">Generate Ship Names <span data-icon="heartFill" data-icon-size="16"></span></button>
-          </form>
-
-          <!-- RIGHT: results -->
-          <div class="panel results__panel" id="resultsPanel">
-            <h3 class="panel__title">Generated Ship Names</h3>
-            <div class="compat" id="compat" aria-live="polite"></div>
-            <div class="results__empty" id="resultsEmpty">
-              <span data-icon="sparkles" data-icon-size="60"></span>
-              <p>Your ship names will appear here</p>
-            </div>
-            <div class="results__list" id="results" hidden></div>
-            <p class="results__hint">Tap copy on any name to grab it instantly.</p>
-            <div class="sr-only" id="resultsLive" aria-live="polite"></div>
+    <!-- ============ RESULTS ============ -->
+    <section class="section results-section">
+      <div class="container container--narrow">
+        <div class="panel results__panel" id="resultsPanel">
+          <h3 class="panel__title">Generated Ship Names</h3>
+          <div class="compat" id="compat" aria-live="polite"></div>
+          <div class="results__empty" id="resultsEmpty">
+            <span data-icon="sparkles" data-icon-size="60"></span>
+            <p>Your ship names will appear here</p>
           </div>
+          <div class="results__list" id="results" hidden></div>
+          <p class="results__hint">Tap copy on any name to grab it instantly.</p>
+          <div class="sr-only" id="resultsLive" aria-live="polite"></div>
         </div>
       </div>
     </section>
