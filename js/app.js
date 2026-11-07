@@ -33,15 +33,31 @@
     { label: "Liam & Olivia", name1: "Liam", name2: "Olivia" },
   ];
 
-  let state = { category: "Romantic Couple", style: "Cute" };
+  let state = { category: "Romantic Couple", style: "Cute", lastPair: null };
 
   // Track the last request so pressing "Generate" again on the same inputs
   // pages forward to a fresh batch instead of repeating the same names.
   let lastSig = "";
   let batch = 0;
 
+  // Saved names live in localStorage only — nothing leaves the browser.
+  const SAVED_KEY = "shipnames.cc.saved";
+  const SAVED_MAX = 30;
+
   function el(id) {
     return document.getElementById(id);
+  }
+
+  function escapeHtml(s) {
+    return (s || "").replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function currentPair() {
+    const p = state.lastPair;
+    if (!p) return "";
+    return p.name1 + " + " + p.name2;
   }
 
   /* ---------- build category + style choice chips ---------- */
@@ -139,10 +155,22 @@
 
   /* ---------- result cards ---------- */
 
+  function explainText(item) {
+    if (!item.explain) return "";
+    return item.explain.pieces
+      ? item.explain.pieces + " · " + item.explain.method
+      : item.explain.method;
+  }
+
   function resultCard(item, index) {
     const card = document.createElement("div");
     card.className = "result-card";
     card.style.setProperty("--i", index);
+
+    const explain = explainText(item);
+    const explainHtml = explain
+      ? '<span class="result-card__explain">' + explain + "</span>"
+      : "";
 
     card.innerHTML =
       '<span class="result-card__num">' +
@@ -157,19 +185,291 @@
       " " +
       item.label +
       "</span>" +
+      explainHtml +
       "</div>" +
+      '<span class="result-card__actions">' +
+      '<button class="icon-btn save-btn" type="button" data-name="' +
+      item.name +
+      '" aria-label="Save ' +
+      item.name +
+      '" aria-pressed="false">' +
+      Icons.heart({ size: 17 }) +
+      "</button>" +
+      '<button class="icon-btn card-btn" type="button" aria-label="Make a name card for ' +
+      item.name +
+      '">' +
+      Icons.image({ size: 17 }) +
+      "</button>" +
       '<button class="copy-btn" type="button" aria-label="Copy ' +
       item.name +
       '">' +
       Icons.copy({ size: 18 }) +
-      "</button>";
+      "</button>" +
+      "</span>";
 
     const copyBtn = card.querySelector(".copy-btn");
     copyBtn.addEventListener("click", function () {
       copyText(item.name, copyBtn);
     });
 
+    const saveBtn = card.querySelector(".save-btn");
+    saveBtn.addEventListener("click", function () {
+      toggleSave(item);
+    });
+    syncSaveButton(saveBtn, item.name);
+
+    const cardBtn = card.querySelector(".card-btn");
+    cardBtn.addEventListener("click", function () {
+      openNameCard(item);
+    });
+
     return card;
+  }
+
+  /* ---------- save / shortlist ---------- */
+
+  function loadSaved() {
+    try {
+      const raw = localStorage.getItem(SAVED_KEY);
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function storeSaved(arr) {
+    try {
+      localStorage.setItem(SAVED_KEY, JSON.stringify(arr));
+    } catch (e) {
+      /* no-op: private mode or full storage */
+    }
+  }
+
+  function isSaved(name) {
+    return loadSaved().some(function (s) {
+      return s.name === name;
+    });
+  }
+
+  function syncSaveButton(btn, name) {
+    const on = isSaved(name);
+    btn.classList.toggle("is-saved", on);
+    btn.setAttribute("aria-pressed", String(on));
+    btn.innerHTML = on ? Icons.heartFill({ size: 17 }) : Icons.heart({ size: 17 });
+  }
+
+  function refreshSaveButtons() {
+    document.querySelectorAll(".save-btn").forEach(function (btn) {
+      syncSaveButton(btn, btn.getAttribute("data-name"));
+    });
+  }
+
+  function toggleSave(item) {
+    const saved = loadSaved();
+    const idx = saved.findIndex(function (s) {
+      return s.name === item.name;
+    });
+    if (idx !== -1) {
+      saved.splice(idx, 1);
+    } else {
+      saved.unshift({
+        name: item.name,
+        pair: currentPair(),
+        label: item.label,
+        explain: item.explain || null,
+      });
+      if (saved.length > SAVED_MAX) saved.length = SAVED_MAX;
+    }
+    storeSaved(saved);
+    renderSaved();
+    refreshSaveButtons();
+  }
+
+  function renderSaved() {
+    const panel = el("resultsPanel");
+    if (!panel) return;
+    let sec = el("savedSection");
+    const saved = loadSaved();
+    if (!saved.length) {
+      if (sec) sec.remove();
+      return;
+    }
+    if (!sec) {
+      sec = document.createElement("div");
+      sec.className = "saved-section";
+      sec.id = "savedSection";
+      const hint = panel.querySelector(".results__hint");
+      if (hint) panel.insertBefore(sec, hint);
+      else panel.appendChild(sec);
+    }
+    sec.innerHTML = '<h4 class="saved-section__title">Your saved names</h4>';
+    const list = document.createElement("div");
+    list.className = "saved-list";
+    saved.forEach(function (entry) {
+      const row = document.createElement("div");
+      row.className = "saved-item";
+      row.innerHTML =
+        '<div class="saved-item__body">' +
+        '<span class="saved-item__name">' +
+        escapeHtml(entry.name) +
+        "</span>" +
+        '<span class="saved-item__pair">' +
+        escapeHtml(entry.pair) +
+        "</span>" +
+        "</div>";
+      const copyBtn = document.createElement("button");
+      copyBtn.className = "copy-btn";
+      copyBtn.type = "button";
+      copyBtn.setAttribute("aria-label", "Copy " + entry.name);
+      copyBtn.innerHTML = Icons.copy({ size: 18 });
+      copyBtn.addEventListener("click", function () {
+        copyText(entry.name, copyBtn);
+      });
+      const delBtn = document.createElement("button");
+      delBtn.className = "icon-btn saved-item__remove";
+      delBtn.type = "button";
+      delBtn.setAttribute("aria-label", "Remove " + entry.name + " from saved names");
+      delBtn.innerHTML = Icons.close({ size: 16 });
+      delBtn.addEventListener("click", function () {
+        toggleSave(entry);
+      });
+      row.appendChild(copyBtn);
+      row.appendChild(delBtn);
+      list.appendChild(row);
+    });
+    sec.appendChild(list);
+    const clearBtn = document.createElement("button");
+    clearBtn.className = "saved-section__clear";
+    clearBtn.type = "button";
+    clearBtn.textContent = "Clear all saved names";
+    clearBtn.addEventListener("click", function () {
+      storeSaved([]);
+      renderSaved();
+      refreshSaveButtons();
+    });
+    sec.appendChild(clearBtn);
+  }
+
+  /* ---------- name card modal + PNG download ---------- */
+
+  function openNameCard(item) {
+    closeNameCard();
+    const pair = currentPair();
+    const explain = explainText(item);
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.id = "nameCardModal";
+    overlay.innerHTML =
+      '<div class="modal" role="dialog" aria-modal="true" aria-label="Name card for ' +
+      item.name +
+      '">' +
+      '<button class="icon-btn modal__close" type="button" aria-label="Close">' +
+      Icons.close({ size: 18 }) +
+      "</button>" +
+      '<div class="name-card">' +
+      '<span class="name-card__site">shipnames.cc</span>' +
+      '<span class="name-card__name">' +
+      item.name +
+      "</span>" +
+      '<span class="name-card__pair">' +
+      escapeHtml(pair) +
+      "</span>" +
+      (explain ? '<span class="name-card__explain">' + explain + "</span>" : "") +
+      "</div>" +
+      '<div class="modal__actions">' +
+      '<button class="btn btn--primary" type="button" id="nameCardDownload">' +
+      Icons.download({ size: 18 }) +
+      " Download PNG</button>" +
+      '<button class="btn btn--ghost" type="button" id="nameCardCopy">Copy text</button>' +
+      "</div>" +
+      "</div>";
+    document.body.appendChild(overlay);
+    overlay.querySelector(".modal__close").addEventListener("click", closeNameCard);
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) closeNameCard();
+    });
+    overlay.querySelector("#nameCardDownload").addEventListener("click", function () {
+      downloadNameCard(item, pair, explain);
+    });
+    overlay.querySelector("#nameCardCopy").addEventListener("click", function (e) {
+      const text =
+        item.name +
+        " — " +
+        pair +
+        (explain ? " (" + explain + ")" : "") +
+        " · shipnames.cc";
+      copyText(text, e.currentTarget);
+    });
+    document.addEventListener("keydown", onCardEscape);
+    const closeBtn = overlay.querySelector(".modal__close");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function onCardEscape(e) {
+    if (e.key === "Escape") closeNameCard();
+  }
+
+  function closeNameCard() {
+    const m = el("nameCardModal");
+    if (m) m.remove();
+    document.removeEventListener("keydown", onCardEscape);
+  }
+
+  function downloadNameCard(item, pair, explain) {
+    const size = 1080;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    const grad = ctx.createLinearGradient(0, 0, size, size);
+    grad.addColorStop(0, "#e0567f");
+    grad.addColorStop(1, "#c53c66");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = "rgba(255,255,255,0.10)";
+    ctx.beginPath();
+    ctx.arc(930, 150, 220, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(130, 950, 180, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "600 44px Poppins, sans-serif";
+    ctx.fillText("shipnames.cc", size / 2, 150);
+    let fontSize = 150;
+    ctx.font = "700 " + fontSize + "px Poppins, sans-serif";
+    while (ctx.measureText(item.name).width > size - 160 && fontSize > 60) {
+      fontSize -= 10;
+      ctx.font = "700 " + fontSize + "px Poppins, sans-serif";
+    }
+    ctx.fillText(item.name, size / 2, 540);
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.font = "600 52px Poppins, sans-serif";
+    ctx.fillText(pair, size / 2, 640);
+    if (explain) {
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.font = "400 40px Poppins, sans-serif";
+      ctx.fillText(explain, size / 2, 720);
+    }
+    ctx.fillStyle = "rgba(255,255,255,0.75)";
+    ctx.font = "400 34px Poppins, sans-serif";
+    ctx.fillText("Made with the Ship Name Generator", size / 2, 960);
+    canvas.toBlob(function (blob) {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = item.name.toLowerCase() + "-ship-name.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    }, "image/png");
   }
 
   function copyText(text, btn) {
@@ -299,6 +599,7 @@
       return;
     }
     showError("");
+    state.lastPair = { name1: name1.trim(), name2: name2.trim() };
     renderCompat(out.compatibility);
     renderResults(out.results);
     // Bring the results into view.
@@ -311,6 +612,7 @@
     if (!form) return; // page without the tool
     buildChoices();
     buildExamples();
+    renderSaved();
     form.addEventListener("submit", handleGenerate);
   }
 

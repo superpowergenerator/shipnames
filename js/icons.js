@@ -47,6 +47,16 @@
         o
       ),
     check: (o) => svg('<path d="M20 6 9 17l-5-5"/>', o),
+    download: (o) =>
+      svg(
+        '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>',
+        o
+      ),
+    image: (o) =>
+      svg(
+        '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L6 21"/>',
+        o
+      ),
     sparkles: (o) =>
       svg(
         '<path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z"/><path d="M19 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z"/>',

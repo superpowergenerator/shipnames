@@ -131,16 +131,18 @@
      overlap merges. Yields ~50-100 raw blends before filtering.
      ===================================================================== */
 
+  // Each candidate carries the join method that built it, so the UI can
+  // explain every name truthfully ("Bra + ngelina · Start + end").
   function buildCandidates(a, b) {
     const out = [];
     const cross = (name1, name2) => {
       const pre = prefixParts(name1);
       const suf = suffixParts(name2);
-      for (const p of pre) for (const s of suf) out.push(p + s);
+      for (const p of pre) for (const s of suf) out.push({ word: p + s, method: "Start + end" });
       // syllable-only pairings (lastSyl + lastSyl gives things like "Lexma")
-      out.push(lastSyl(name1) + lastSyl(name2));
-      out.push(firstSyl(name1) + lastSyl(name2));
-      out.push(firstSyl(name1) + last2Syl(name2));
+      out.push({ word: lastSyl(name1) + lastSyl(name2), method: "Syllable swap" });
+      out.push({ word: firstSyl(name1) + lastSyl(name2), method: "Syllable swap" });
+      out.push({ word: firstSyl(name1) + last2Syl(name2), method: "Syllable swap" });
     };
     cross(a, b);
     cross(b, a);
@@ -153,7 +155,7 @@
           const f = n1.slice(i, j);
           for (let k = 0; k < n2.length; k++) {
             for (let l = k + 2; l <= n2.length; l++) {
-              out.push(f + n2.slice(k, l));
+              out.push({ word: f + n2.slice(k, l), method: "Start + end" });
             }
           }
         }
@@ -161,8 +163,10 @@
     };
     subCross(a, b);
     subCross(b, a);
-    out.push(overlapMerge(a, b));
-    out.push(overlapMerge(b, a));
+    const om1 = overlapMerge(a, b);
+    if (om1) out.push({ word: om1, method: "Shared sound" });
+    const om2 = overlapMerge(b, a);
+    if (om2) out.push({ word: om2, method: "Shared sound" });
     return out;
   }
 
@@ -244,6 +248,34 @@
     if (a === b) return w !== a + a;
     if (w.indexOf(a) !== -1 && w.indexOf(b) !== -1) return false; // e.g. "alexemma"
     return true;
+  }
+
+  // Explain a finished blend from its own letters: find the split where the
+  // front part occurs in one source name and the back part in the other.
+  // Anchored splits (front is a prefix of its name, back is a suffix of the
+  // other) win, then splits whose front is near 3 letters — the shape of
+  // the famous joins (Bra + ngelina, Kim + ye). Returns {front, back} or
+  // null when no honest split exists; the caller then shows the method
+  // label on its own instead of inventing pieces.
+  function explainSplit(w, a, b) {
+    let best = null;
+    let bestScore = -Infinity;
+    const consider = (x, y) => {
+      for (let k = 2; k <= w.length - 2; k++) {
+        const front = w.slice(0, k);
+        const back = w.slice(k);
+        if (x.indexOf(front) === -1 || y.indexOf(back) === -1) continue;
+        const anchored = x.startsWith(front) && y.endsWith(back);
+        const score = (anchored ? 100 : 0) - Math.abs(front.length - 3) * 10 + back.length;
+        if (score > bestScore) {
+          bestScore = score;
+          best = { front: front, back: back };
+        }
+      }
+    };
+    consider(a, b);
+    consider(b, a);
+    return best;
   }
 
   /* =====================================================================
@@ -437,7 +469,7 @@
   /* =====================================================================
      Main entry point — unchanged public shape:
        generate({ name1, name2, category, style, count, batch })
-       -> { ok, results:[{name,label,score}], compatibility:{score,label} }
+       -> { ok, results:[{name,label,score,explain:{pieces,method}}], compatibility:{score,label} }
      ===================================================================== */
 
   function generate(opts) {
@@ -464,8 +496,9 @@
     const scored = []; // strict tier: real contribution from both names
     const loose = []; // fallback tier: thinner blends, used only if the strict pool runs short
     for (const raw of buildCandidates(a, b)) {
-      if (!raw) continue;
-      const w = repair(raw);
+      if (!raw || !raw.word) continue;
+      const w = repair(raw.word);
+      const method = raw.method || "Start + end";
       if (!pronounceable(w)) continue;
       if (!validBlend(w, a, b)) continue;
       const key = squash(w);
@@ -492,7 +525,11 @@
         anchor = Math.max(anchor, s);
       }
       const q = score(w, a, b) + styleBonus(w, style) + purposeBonus(w, category) + anchor;
-      const item = { name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q };
+      const split = explainSplit(w, a, b);
+      const explain = split
+        ? { pieces: cap(split.front) + " + " + split.back, method: method }
+        : { pieces: null, method: method };
+      const item = { name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q, explain: explain };
       if (contributionOk(w, a, b, 5)) scored.push(item);
       else if (contributionOk(w, a, b, 4)) loose.push(item);
     }
@@ -512,7 +549,7 @@
     const pageIdx = batch % pages;
     const page = ranked.slice(pageIdx * count, pageIdx * count + count);
 
-    const results = page.map((x) => ({ name: x.name, label: label, score: x.score }));
+    const results = page.map((x) => ({ name: x.name, label: label, score: x.score, explain: x.explain }));
 
     return {
       ok: true,

@@ -2288,3 +2288,244 @@ body[data-page="home"] .footer__bottom a {
   }
 
 }
+
+/* =========================================================
+   36. EXPLAINED JOINS, SAVED NAMES, NAME CARD
+   ========================================================= */
+
+/* Stacked name / label / explanation inside each result card */
+.result-card__name {
+  display: block;
+}
+
+.result-card__label {
+  display: flex;
+}
+
+.result-card__explain {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--text-muted);
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Action buttons on each result card */
+.result-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  flex: 0 0 auto;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
+  background: var(--white);
+  color: var(--text-light);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.icon-btn:hover {
+  border-color: var(--pink);
+  background: var(--pink-light);
+  color: var(--pink-dark);
+}
+
+.icon-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.save-btn.is-saved {
+  border-color: var(--pink);
+  background: var(--pink-light);
+  color: var(--pink);
+}
+
+/* In the 3-per-row grid the actions get their own row under the name,
+   so the name and its explanation keep full width. */
+.results__grid .result-card {
+  flex-wrap: wrap;
+}
+
+.results__grid .result-card__actions {
+  flex-basis: 100%;
+  justify-content: flex-end;
+
+  margin-top: 4px;
+}
+
+/* Saved names section inside the results panel */
+.saved-section {
+  margin-top: 18px;
+  padding-top: 16px;
+
+  border-top: 1px solid var(--border);
+}
+
+.saved-section__title {
+  margin-bottom: 10px;
+
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.saved-list {
+  display: grid;
+  gap: 8px;
+}
+
+.saved-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 12px;
+
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.saved-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.saved-item__name {
+  display: block;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.saved-item__pair {
+  display: block;
+
+  color: var(--text-muted);
+
+  font-size: 12px;
+}
+
+.saved-section__clear {
+  margin-top: 10px;
+  padding: 0;
+
+  border: none;
+  background: none;
+
+  color: var(--pink-dark);
+
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Name card modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(36, 26, 32, 0.55);
+}
+
+.modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 420px;
+
+  padding: 20px;
+
+  background: var(--white);
+  border-radius: 20px;
+
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+.modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+}
+
+.modal__actions {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 16px;
+}
+
+.modal__actions .btn {
+  flex: 1;
+}
+
+.name-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  aspect-ratio: 1;
+
+  padding: 32px;
+
+  border-radius: 20px;
+
+  background: linear-gradient(135deg, #e0567f 0%, #c53c66 100%);
+  color: #fff;
+
+  text-align: center;
+}
+
+.name-card__site {
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.name-card__name {
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.1;
+  word-break: break-word;
+}
+
+.name-card__pair {
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.92;
+}
+
+.name-card__explain {
+  font-size: 14px;
+  opacity: 0.85;
+}
