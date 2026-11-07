@@ -254,12 +254,20 @@
   // front part occurs in one source name and the back part in the other.
   // Anchored splits (front is a prefix of its name, back is a suffix of the
   // other) win, then splits whose front is near 3 letters — the shape of
-  // the famous joins (Bra + ngelina, Kim + ye). Returns {front, back} or
-  // null when no honest split exists; the caller then shows the method
-  // label on its own instead of inventing pieces.
+  // the famous joins (Bra + ngelina, Kim + ye). The method label describes
+  // the actual split: where each part sits in its source name (Start, End,
+  // or Middle), so "Em + ale" reads "Start + start" instead of claiming
+  // "ale" is the end of Alex. Returns {front, back, method} or null when
+  // no honest split exists; the caller then shows the build method label
+  // on its own instead of inventing pieces.
   function explainSplit(w, a, b) {
     let best = null;
     let bestScore = -Infinity;
+    const partPos = (part, name) => {
+      if (name.startsWith(part)) return "Start";
+      if (name.endsWith(part)) return "End";
+      return "Middle";
+    };
     const consider = (x, y) => {
       for (let k = 2; k <= w.length - 2; k++) {
         const front = w.slice(0, k);
@@ -269,7 +277,7 @@
         const score = (anchored ? 100 : 0) - Math.abs(front.length - 3) * 10 + back.length;
         if (score > bestScore) {
           bestScore = score;
-          best = { front: front, back: back };
+          best = { front: front, back: back, method: partPos(front, x) + " + " + partPos(back, y).toLowerCase() };
         }
       }
     };
@@ -527,7 +535,7 @@
       const q = score(w, a, b) + styleBonus(w, style) + purposeBonus(w, category) + anchor;
       const split = explainSplit(w, a, b);
       const explain = split
-        ? { pieces: cap(split.front) + " + " + split.back, method: method }
+        ? { pieces: cap(split.front) + " + " + split.back, method: split.method }
         : { pieces: null, method: method };
       const item = { name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q, explain: explain };
       if (contributionOk(w, a, b, 5)) scored.push(item);
