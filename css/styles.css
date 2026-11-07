@@ -2529,3 +2529,363 @@ body[data-page="home"] .footer__bottom a {
   font-size: 14px;
   opacity: 0.85;
 }
+
+/* =========================================================
+   37. BLOG REDESIGN (blog pages only, CSS only)
+   Scoped to body[data-page="blog"] so the homepage keeps
+   its own look. No content changes. Breaks up the wall of
+   text: clearer section breaks, airier type, scannable
+   lists, and cards for takeaways, notes, FAQs and guides.
+   ========================================================= */
+
+body[data-page="blog"] {
+  --page: #faf7f9;
+  --soft: #fdfafc;
+  --border: #ece3e8;
+  --pink-light: #fbe7ee;
+
+  line-height: 1.7;
+}
+
+/* Article section: more air around the post */
+body[data-page="blog"] .page-hero + .section {
+  padding: 56px 0 64px;
+}
+
+/* Page hero: soft pink tint, bigger title */
+body[data-page="blog"] .page-hero {
+  padding: 56px 0 44px;
+
+  background: linear-gradient(180deg, #fdf0f4 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+body[data-page="blog"] .page-hero h1 {
+  font-size: 40px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+body[data-page="blog"] .article__tag {
+  display: inline-block;
+
+  margin-bottom: 14px;
+  padding: 6px 14px;
+
+  border-radius: 50px;
+
+  background: var(--pink-light);
+  color: var(--pink-dark);
+
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+body[data-page="blog"] .page-hero p {
+  max-width: 640px;
+
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* Featured image: soft shadow */
+body[data-page="blog"] .article-featured {
+  margin-bottom: 32px;
+}
+
+body[data-page="blog"] .article-featured img {
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(36, 26, 32, 0.12);
+}
+
+/* Quick Takeaways: tinted card with shadow */
+body[data-page="blog"] .tldr {
+  margin-bottom: 36px;
+  padding: 24px;
+
+  background: #fdf6f8;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--pink);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(36, 26, 32, 0.06);
+}
+
+body[data-page="blog"] .tldr h2 {
+  font-size: 19px;
+}
+
+body[data-page="blog"] .tldr li {
+  margin-bottom: 10px;
+
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* Headings: pink rule under every H2, accent bar on H3 */
+body[data-page="blog"] .prose > h2 {
+  position: relative;
+
+  margin: 56px 0 18px;
+  padding-bottom: 18px;
+
+  border-bottom: 1px solid var(--border);
+
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+body[data-page="blog"] .prose > h2::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+
+  width: 88px;
+  height: 4px;
+
+  background: var(--pink);
+}
+
+body[data-page="blog"] .prose > h3 {
+  margin: 34px 0 12px;
+  padding-left: 12px;
+
+  border-left: 3px solid var(--pink);
+
+  font-size: 21px;
+  line-height: 1.35;
+}
+
+/* Paragraphs: airier type, lead paragraph stands out */
+body[data-page="blog"] .prose > p {
+  margin-bottom: 18px;
+
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+body[data-page="blog"] .prose > p:first-of-type {
+  font-size: 19px;
+  line-height: 1.7;
+}
+
+/* Links: bolder, clearer */
+body[data-page="blog"] .prose a {
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+body[data-page="blog"] .prose a:hover {
+  background: var(--pink-light);
+  border-radius: 4px;
+}
+
+/* Lists: name and checklist items become soft cards in two
+   columns on desktop, one column on mobile */
+body[data-page="blog"] .prose > ul {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+  margin: 20px 0 24px;
+  padding-left: 0;
+
+  list-style: none;
+}
+
+body[data-page="blog"] .prose > ul li {
+  position: relative;
+
+  margin-bottom: 0;
+  padding: 12px 14px 12px 30px;
+
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body[data-page="blog"] .prose > ul li::before {
+  content: "";
+
+  position: absolute;
+  top: 20px;
+  left: 13px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--pink);
+}
+
+/* Ordered lists: pink circled numbers */
+body[data-page="blog"] .prose > ol {
+  margin: 20px 0 24px;
+  padding-left: 0;
+
+  list-style: none;
+  counter-reset: step;
+}
+
+body[data-page="blog"] .prose > ol li {
+  position: relative;
+
+  margin-bottom: 14px;
+  padding-left: 44px;
+
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+body[data-page="blog"] .prose > ol li::before {
+  counter-increment: step;
+  content: counter(step);
+
+  position: absolute;
+  top: 1px;
+  left: 0;
+
+  display: grid;
+  place-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+
+  background: var(--pink-light);
+  color: var(--pink-dark);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Note cards: more presence */
+body[data-page="blog"] .note-card {
+  margin: 28px 0;
+  padding: 20px 22px;
+
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(36, 26, 32, 0.05);
+
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* FAQ band: soft pink, cards lift when open */
+body[data-page="blog"] .section--surface {
+  background: #fdf0f4;
+}
+
+body[data-page="blog"] .faq-item {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+body[data-page="blog"] .faq-item[open] {
+  box-shadow: 0 10px 28px rgba(36, 26, 32, 0.07);
+}
+
+body[data-page="blog"] .faq-item__body {
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* CTA banner: pink gradient like the homepage, white button */
+body[data-page="blog"] .cta-banner {
+  background: linear-gradient(135deg, #e0567f 0%, #c53c66 100%);
+  border-radius: 18px;
+  box-shadow: 0 20px 44px rgba(197, 60, 102, 0.28);
+}
+
+body[data-page="blog"] .cta-banner .btn--primary {
+  background: #fff;
+  color: var(--pink-dark);
+  box-shadow: 0 10px 24px rgba(36, 26, 32, 0.18);
+}
+
+body[data-page="blog"] .cta-banner .btn--primary:hover {
+  background: #fff;
+  color: var(--pink-dark);
+}
+
+/* Keep reading cards: real cards with a hover lift */
+body[data-page="blog"] .blog-card {
+  overflow: hidden;
+
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body[data-page="blog"] .blog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(36, 26, 32, 0.1);
+}
+
+body[data-page="blog"] .blog-card__img {
+  margin-bottom: 0;
+
+  border-radius: 0;
+}
+
+body[data-page="blog"] .blog-card__tag {
+  margin: 14px 16px 8px;
+}
+
+body[data-page="blog"] .blog-card h3 {
+  margin: 0 16px 8px;
+}
+
+body[data-page="blog"] .blog-card__more {
+  margin: 0 16px 16px;
+  padding-top: 0;
+}
+
+body[data-page="blog"] .blog-card:hover h3 {
+  color: var(--pink-dark);
+}
+
+@media (min-width: 880px) {
+  body[data-page="blog"] .prose > ul {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  body[data-page="blog"] .page-hero {
+    padding: 40px 0 32px;
+  }
+
+  body[data-page="blog"] .page-hero h1 {
+    font-size: 30px;
+  }
+
+  body[data-page="blog"] .page-hero + .section {
+    padding: 40px 0 48px;
+  }
+
+  body[data-page="blog"] .prose > h2 {
+    margin: 44px 0 16px;
+
+    font-size: 26px;
+  }
+
+  body[data-page="blog"] .prose > p {
+    font-size: 16px;
+  }
+
+  body[data-page="blog"] .prose > p:first-of-type {
+    font-size: 18px;
+  }
+}
