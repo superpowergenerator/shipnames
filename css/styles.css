@@ -1881,3 +1881,410 @@ textarea.field__input {
   }
 
 }
+
+/* =========================================================
+   35. HOMEPAGE REDESIGN (home only, CSS only)
+   Scoped to body[data-page="home"] so blog pages keep
+   their existing look. No content changes.
+   ========================================================= */
+
+body[data-page="home"] {
+  --text: #241a20;
+  --text-light: #5b5158;
+  --text-muted: #9a8f96;
+  --page: #faf7f9;
+  --soft: #fdfafc;
+  --border: #ece3e8;
+  --pink-light: #fbe7ee;
+
+  line-height: 1.7;
+}
+
+/* Sections: more air, soft pink FAQ band */
+body[data-page="home"] .section {
+  padding: 64px 0;
+}
+
+body[data-page="home"] .section.article {
+  padding: 56px 0 72px;
+}
+
+body[data-page="home"] .results-section {
+  padding: 32px 0 48px;
+}
+
+body[data-page="home"] .section--surface {
+  background: #fdf0f4;
+}
+
+/* Header: frosted, taller, pill link hovers */
+body[data-page="home"] .site-header {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+body[data-page="home"] .nav {
+  height: 68px;
+}
+
+body[data-page="home"] .nav__links a {
+  padding: 8px 12px;
+  border-radius: 50px;
+}
+
+body[data-page="home"] .nav__links a:hover,
+body[data-page="home"] .nav__links a.is-active {
+  background: var(--pink-light);
+}
+
+/* Buttons: soft pink shadow */
+body[data-page="home"] .btn--primary {
+  box-shadow: 0 10px 24px rgba(224, 86, 127, 0.35);
+}
+
+body[data-page="home"] .btn--primary:hover {
+  box-shadow: 0 14px 28px rgba(224, 86, 127, 0.4);
+}
+
+/* Results panel: lifted card, rounder result cards */
+body[data-page="home"] .results__panel {
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(36, 26, 32, 0.09);
+}
+
+body[data-page="home"] .results__panel .panel__title {
+  font-size: 22px;
+}
+
+body[data-page="home"] .result-card {
+  border-radius: 14px;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+body[data-page="home"] .result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(36, 26, 32, 0.08);
+}
+
+body[data-page="home"] .result-top .result-card {
+  border-radius: 16px;
+}
+
+/* Article type: bigger headings with a pink rule */
+body[data-page="home"] .article__body > h2 {
+  position: relative;
+
+  margin: 52px 0 16px;
+  padding-bottom: 14px;
+
+  border-bottom: 1px solid var(--border);
+
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+
+body[data-page="home"] .article__body > h2::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+
+  width: 56px;
+  height: 3px;
+
+  border-radius: 3px;
+
+  background: var(--pink);
+}
+
+body[data-page="home"] .article__body > h2 + p {
+  font-size: 17px;
+}
+
+body[data-page="home"] .article__body > h3 {
+  margin: 34px 0 10px;
+
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+body[data-page="home"] .article__body p {
+  margin-bottom: 18px;
+}
+
+/* TL;DR: pink quick-answer card */
+body[data-page="home"] .tldr {
+  padding: 24px 26px;
+
+  background: var(--pink-light);
+  border: 1px solid #f3d3de;
+  border-left: 4px solid var(--pink);
+  border-radius: 16px;
+
+  box-shadow: 0 12px 32px rgba(36, 26, 32, 0.06);
+}
+
+body[data-page="home"] .tldr h2 {
+  font-size: 19px;
+}
+
+body[data-page="home"] .tldr li {
+  margin-bottom: 10px;
+
+  font-size: 15px;
+}
+
+/* Featured image: rounder, soft shadow */
+body[data-page="home"] .article-featured img {
+  border-radius: 20px;
+  box-shadow: 0 20px 48px rgba(36, 26, 32, 0.12);
+}
+
+/* Tables: pink header row, zebra rows */
+body[data-page="home"] .table-wrap {
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(36, 26, 32, 0.06);
+}
+
+body[data-page="home"] table.data th {
+  background: var(--pink);
+  color: #fff;
+}
+
+body[data-page="home"] table.data th,
+body[data-page="home"] table.data td {
+  padding: 13px 16px;
+}
+
+body[data-page="home"] table.data tbody tr:nth-child(even) td {
+  background: var(--soft);
+}
+
+/* Feature cards: lift on hover, bigger icon chips */
+body[data-page="home"] .feature-card {
+  padding: 24px;
+
+  border-radius: 16px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+body[data-page="home"] .feature-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #f0c9d6;
+
+  box-shadow: 0 16px 36px rgba(36, 26, 32, 0.09);
+}
+
+body[data-page="home"] .feature-card__icon {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 14px;
+}
+
+body[data-page="home"] .feature-card h3 {
+  font-size: 19px;
+}
+
+/* Check list: each item a soft row card */
+body[data-page="home"] .check-list {
+  gap: 12px;
+}
+
+body[data-page="home"] .check-list li {
+  padding: 13px 16px 13px 48px;
+
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+body[data-page="home"] .check-list li svg {
+  top: 13px;
+  left: 14px;
+}
+
+/* FAQ: rounder items, spinning plus, soft open shadow */
+body[data-page="home"] .section__title {
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+
+body[data-page="home"] .faq-item {
+  border-radius: 16px;
+}
+
+body[data-page="home"] .faq-item[open] {
+  border-color: var(--pink);
+  box-shadow: 0 12px 32px rgba(36, 26, 32, 0.06);
+}
+
+body[data-page="home"] .faq-item summary {
+  padding: 18px 20px;
+}
+
+body[data-page="home"] .faq-item summary .faq-icon {
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+body[data-page="home"] .faq-item[open] summary .faq-icon {
+  transform: rotate(45deg);
+
+  background: var(--pink);
+  color: #fff;
+}
+
+body[data-page="home"] .faq-item__body {
+  padding: 0 20px 20px;
+}
+
+/* CTA banner: pink gradient with soft glow circles */
+body[data-page="home"] .cta-banner {
+  position: relative;
+  overflow: hidden;
+
+  padding: 56px 32px;
+
+  background: linear-gradient(135deg, #e0567f 0%, #c53c66 100%);
+  border-radius: 24px;
+
+  box-shadow: 0 24px 60px rgba(197, 60, 102, 0.35);
+}
+
+body[data-page="home"] .cta-banner::before,
+body[data-page="home"] .cta-banner::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.12);
+}
+
+body[data-page="home"] .cta-banner::before {
+  width: 260px;
+  height: 260px;
+
+  top: -130px;
+  right: -60px;
+}
+
+body[data-page="home"] .cta-banner::after {
+  width: 200px;
+  height: 200px;
+
+  bottom: -110px;
+  left: -50px;
+}
+
+body[data-page="home"] .cta-banner h2 {
+  position: relative;
+  z-index: 1;
+
+  font-size: 32px;
+}
+
+body[data-page="home"] .cta-banner p {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="home"] .cta-banner .btn--primary {
+  position: relative;
+  z-index: 1;
+
+  background: #fff;
+  color: var(--pink-dark);
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+body[data-page="home"] .cta-banner .btn--primary:hover {
+  background: var(--pink-light);
+}
+
+/* Footer: deep plum */
+body[data-page="home"] .site-footer {
+  background: #221820;
+  border-top: none;
+
+  color: rgba(255, 255, 255, 0.72);
+}
+
+body[data-page="home"] .site-footer .brand {
+  color: #fff;
+}
+
+body[data-page="home"] .footer__col h4 {
+  color: #fff;
+}
+
+body[data-page="home"] .footer__col a {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+body[data-page="home"] .footer__col a:hover {
+  color: #fff;
+}
+
+body[data-page="home"] .footer__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+
+  color: rgba(255, 255, 255, 0.55);
+}
+
+body[data-page="home"] .footer__bottom a {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+
+@media (min-width: 880px) {
+
+  body[data-page="home"] .section {
+    padding: 80px 0;
+  }
+
+  body[data-page="home"] .section.article {
+    padding: 64px 0 88px;
+  }
+
+  body[data-page="home"] .results-section {
+    padding: 32px 0 48px;
+  }
+
+  body[data-page="home"] .article__body > h2 {
+    font-size: 34px;
+  }
+
+  body[data-page="home"] .section__title {
+    font-size: 34px;
+  }
+
+  body[data-page="home"] .cards-grid {
+    gap: 18px;
+  }
+
+  body[data-page="home"] .cta-banner {
+    padding: 72px 48px;
+  }
+
+  body[data-page="home"] .cta-banner h2 {
+    font-size: 36px;
+  }
+
+}
