@@ -1889,8 +1889,8 @@ textarea.field__input {
    ========================================================= */
 
 body[data-page="home"] {
-  --text: #241a20;
-  --text-light: #5b5158;
+  --text: #000000;
+  --text-light: #000000;
   --text-muted: #9a8f96;
   --page: #faf7f9;
   --soft: #fdfafc;
@@ -1980,7 +1980,7 @@ body[data-page="home"] .article__body > h2 {
   position: relative;
 
   margin: 52px 0 16px;
-  padding-bottom: 14px;
+  padding-bottom: 18px;
 
   border-bottom: 1px solid var(--border);
 
@@ -1995,8 +1995,8 @@ body[data-page="home"] .article__body > h2::after {
   left: 0;
   bottom: -1px;
 
-  width: 56px;
-  height: 3px;
+  width: 88px;
+  height: 4px;
 
   border-radius: 3px;
 
