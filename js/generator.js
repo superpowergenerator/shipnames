@@ -86,6 +86,16 @@
     return lastSyl(rest) + l1;
   }
 
+  // First two syllables: "ange" (angelina), "isa" (isabella), "chri" + "sto"
+  // (christopher -> "christo"). Gives a longer front chunk for graceful,
+  // elegant and fantasy blends that a single syllable cannot reach.
+  function first2Syl(n) {
+    const s1 = firstSyl(n);
+    const rest = n.slice(s1.length);
+    if (!rest) return s1;
+    return s1 + firstSyl(rest);
+  }
+
   const head = (n, k) => n.slice(0, k);
   const tail = (n, k) => n.slice(-k);
 
@@ -127,8 +137,11 @@
 
   /* =====================================================================
      STEP 2 — candidate generation: cross the front-sounds of one name with
-     the end-sounds of the other. Both orders. Plus syllable pairings and
-     overlap merges. Yields ~50-100 raw blends before filtering.
+     the end-sounds of the other. Both orders. Plus syllable pairings,
+     long blends (two syllables + two syllables, for graceful/elegant and
+     fantasy shapes), echo blends (a nickname chunk repeated, for playful
+     and funny shapes), and overlap merges. Yields ~50-100 raw blends
+     before filtering.
      ===================================================================== */
 
   // Each candidate carries the join method that built it, so the UI can
@@ -143,6 +156,11 @@
       out.push({ word: lastSyl(name1) + lastSyl(name2), method: "Syllable swap" });
       out.push({ word: firstSyl(name1) + lastSyl(name2), method: "Syllable swap" });
       out.push({ word: firstSyl(name1) + last2Syl(name2), method: "Syllable swap" });
+      // Long blends: two syllables from the front of one name + two (or one)
+      // from the end of the other. These are the graceful, elegant and
+      // fantasy shapes (Alexandra + Isabella -> "Alexabella", "Alebella").
+      out.push({ word: first2Syl(name1) + last2Syl(name2), method: "Long blend" });
+      out.push({ word: first2Syl(name1) + lastSyl(name2), method: "Long blend" });
     };
     cross(a, b);
     cross(b, a);
@@ -167,6 +185,23 @@
     if (om1) out.push({ word: om1, method: "Shared sound" });
     const om2 = overlapMerge(b, a);
     if (om2) out.push({ word: om2, method: "Shared sound" });
+    // Echo blends: repeat the natural 2-letter nickname chunk from the
+    // start of either name (Lucas + Luna -> "Lulu", Mia + Maya -> "Mimi").
+    // These are the playful, funny and cute shapes. Only the first two
+    // letters count: a middle chunk (like "ca" in Lucas) would repeat
+    // into nonsense ("Caca"). The chunk comes from one name only, so the
+    // contribution check below treats Echo shapes specially.
+    // Blocklist: laughter sounds (ha, he, hi, ho, hu) and "ka" (Kaka)
+    // read as giggles or rude words, not as names.
+    const ECHO_BLOCK = new Set(["ha", "he", "hi", "ho", "hu", "ka"]);
+    const echoChunks = new Set();
+    for (const n of [a, b]) {
+      const c = n.slice(0, 2);
+      if (/[aeiou]/.test(c) && !ECHO_BLOCK.has(c)) echoChunks.add(c);
+    }
+    echoChunks.forEach((c) => {
+      out.push({ word: c + c, method: "Echo" });
+    });
     return out;
   }
 
@@ -367,6 +402,9 @@
   const isLong = (w) => w.length >= 6;
   const softHeavy = (w) => ((w.match(/[lmn]/g) || []).length >= 1);
   const harsh = (w) => has(w, /[xzqk]/);
+  // Echo: a short name built by repeating one singable chunk (Lulu, Mimi,
+  // Bobo). These are the playful, funny shapes.
+  const isEcho = (w) => w.length >= 4 && w.length <= 6 && w.slice(0, 2) === w.slice(-2);
 
   // Returns 2 (strong match), 1 (partial), 0 (no match) or -1 (clear mismatch).
   // Strong matches are judged mainly on the name's ENDING and sound
@@ -395,7 +433,7 @@
         if (endsWithAny(w, ["a", "ia", "ine", "elle", "ana", "ora", "e"]) || len >= 7) return 1;
         return 0;
       case "Funny":
-        if (endsWithAny(w, ["o", "oo", "zo", "az"]) || /([bcdfghjklmnpqrstvwxyz])\1/.test(w)) return 2;
+        if (isEcho(w) || endsWithAny(w, ["o", "oo", "zo", "az"]) || /([bcdfghjklmnpqrstvwxyz])\1/.test(w)) return 2;
         if (len <= 6) return 1;
         return 0;
       case "Fantasy":
@@ -603,12 +641,43 @@
       if (w.length > 6) {
         if (w.indexOf(a) !== -1 || w.indexOf(b) !== -1) concat -= 15;
       }
-      const q = score(w, a, b) + filterBonus(w, style, category) + anchor + coverage + concat;
-      const explain = split
+      // Pattern bonus: the new join patterns (Long blend, Echo) get a
+      // boost when they fit the chosen filter, so each filter surfaces
+      // names in its own shape. Echo names are short by nature, so they
+      // can never earn the big anchor bonus that long blends get; the
+      // Funny bonus is large enough to close that gap, so a playful echo
+      // like "Lulu" actually shows up under Funny instead of being
+      // buried under long anchored blends.
+      let patternBonus = 0;
+      if (method === "Long blend") {
+        if (style === "Elegant" || style === "Fantasy" ||
+            category === "Marriage / Wedding" || category === "Fantasy Characters" ||
+            category === "Fictional Characters") patternBonus += 20;
+      } else if (method === "Echo" || isEcho(w)) {
+        // Echo names are playful, so they only get a boost under Funny.
+        // They get NO boost under Cute: without one, baby-talk echoes
+        // (Bebe, Jeje, Kaka, Haha) crowd out the real blends on the
+        // default filter, which is what the user sees first.
+        // Checked by shape, not by method, because the same echo can
+        // also come from the substring crossing above.
+        if (style === "Funny") patternBonus += 35;
+      }
+      const q = score(w, a, b) + filterBonus(w, style, category) + anchor + coverage + concat + patternBonus;
+      let explain = split
         ? { pieces: cap(split.front) + " + " + split.back, method: split.method }
         : { pieces: null, method: method };
+      // Echo blends repeat one chunk, so a split across both names may not
+      // exist. Show the repeat honestly instead of inventing pieces.
+      if (method === "Echo" && !split) {
+        explain = { pieces: cap(w.slice(0, 2)) + " × 2", method: "Echo" };
+      }
       const item = { name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q, explain: explain };
-      if (contributionOk(w, a, b, 5)) scored.push(item);
+      // Echo shapes are valid by construction (the repeated chunk is a
+      // real nickname sound from a name), so they skip the two-name
+      // contribution test. Checked by shape, not by method, because the
+      // same echo can also come from the substring crossing above.
+      if (isEcho(w)) scored.push(item);
+      else if (contributionOk(w, a, b, 5)) scored.push(item);
       else if (contributionOk(w, a, b, 4)) loose.push(item);
     }
 
