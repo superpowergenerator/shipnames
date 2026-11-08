@@ -129,14 +129,15 @@
     }
   }
 
-  // If results are already showing, re-generate immediately when a filter
-  // changes, so the user sees the results update without another click on
-  // Generate. Only runs when both names are filled in and results are on
-  // screen; changing a filter before the first generate does nothing.
+  // Re-generate immediately when a filter changes, so the user sees the
+  // results update without another click on Generate. Runs whenever both
+  // names are filled in, even before the first generate: on a fresh page
+  // a filter click used to do nothing until Generate was pressed, which
+  // looked broken. Changing a filter changes the request signature, so
+  // handleGenerate resets to the first batch for the new filter.
   function maybeRegenerate() {
     const n1 = el("name1"), n2 = el("name2");
-    const list = el("results");
-    if (n1 && n2 && n1.value.trim() && n2.value.trim() && list && !list.hidden && list.children.length) {
+    if (n1 && n2 && n1.value.trim() && n2.value.trim()) {
       handleGenerate();
     }
   }
