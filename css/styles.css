@@ -214,6 +214,8 @@ h4 {
   border: 1px solid transparent;
   border-radius: 50px;
 
+  white-space: nowrap;
+
   font-size: 16px;
   font-weight: 600;
 
@@ -286,11 +288,13 @@ h4 {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 
   color: var(--text);
 
   font-size: 20px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .brand__mark {
@@ -308,7 +312,8 @@ h4 {
 .nav__links {
   display: none;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
+  flex-shrink: 0;
 
   list-style: none;
 }
@@ -317,6 +322,7 @@ h4 {
   color: var(--text-light);
   font-size: 15px;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .nav__links a:hover,
@@ -326,6 +332,7 @@ h4 {
 
 .nav__cta {
   display: none;
+  flex-shrink: 0;
 }
 
 .nav__toggle {
