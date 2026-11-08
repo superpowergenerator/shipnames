@@ -85,12 +85,15 @@
       catWrap.addEventListener("click", function (e) {
         const btn = e.target.closest("[data-cat]");
         if (!btn) return;
-        state.category = btn.getAttribute("data-cat");
+        const next = btn.getAttribute("data-cat");
+        if (next === state.category) return; // already selected: nothing to do
+        state.category = next;
         catWrap.querySelectorAll(".chip").forEach(function (c) {
           const on = c === btn;
           c.classList.toggle("is-selected", on);
           c.setAttribute("aria-checked", String(on));
         });
+        maybeRegenerate();
       });
     }
 
@@ -113,13 +116,28 @@
       styleWrap.addEventListener("click", function (e) {
         const btn = e.target.closest("[data-style]");
         if (!btn) return;
-        state.style = btn.getAttribute("data-style");
+        const next = btn.getAttribute("data-style");
+        if (next === state.style) return; // already selected: nothing to do
+        state.style = next;
         styleWrap.querySelectorAll(".chip").forEach(function (c) {
           const on = c === btn;
           c.classList.toggle("is-selected", on);
           c.setAttribute("aria-checked", String(on));
         });
+        maybeRegenerate();
       });
+    }
+  }
+
+  // If results are already showing, re-generate immediately when a filter
+  // changes, so the user sees the results update without another click on
+  // Generate. Only runs when both names are filled in and results are on
+  // screen; changing a filter before the first generate does nothing.
+  function maybeRegenerate() {
+    const n1 = el("name1"), n2 = el("name2");
+    const list = el("results");
+    if (n1 && n2 && n1.value.trim() && n2.value.trim() && list && !list.hidden && list.children.length) {
+      handleGenerate();
     }
   }
 

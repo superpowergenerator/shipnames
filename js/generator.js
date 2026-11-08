@@ -334,7 +334,11 @@
     // ship-name feel (20) — flows, lands on a name-like sound, right size
     let feel = 0;
     if (endsWithAny(word, REAL_ENDINGS) || isVowel(word[word.length - 1])) feel += 0.45;
-    if (word.length >= 5 && word.length <= 8) feel += 0.35; // sweet spot
+    // Sweet spot is relative to the source names: a blend of two long
+    // names may legitimately be longer (Brangelina is 10 letters because
+    // Angelina is 8). A fixed 5-8 cap would punish exactly those blends.
+    const maxSrc = Math.max(a.length, b.length);
+    if (word.length >= 5 && word.length <= Math.max(8, maxSrc + 2)) feel += 0.35;
     if (!/[bcdfghjklmnpqrstvwxyz]{2}/.test(word)) feel += 0.2; // clean joins
     feel = Math.min(1, feel);
 
@@ -348,10 +352,13 @@
   }
 
   /* =====================================================================
-     STEP 6 — filter shaping. Style + purpose add scoring BONUSES only; they
-     never alter a single letter of a name. Because the bonus profiles differ,
-     the same pair ranks differently under different filters — so Cute, Fantasy
-     and Baby Name Inspiration surface genuinely different top names.
+     STEP 6 — filter shaping. Style + purpose are scored as a MATCH, not a
+     small nudge: a name that fits the chosen style/purpose gets a bonus
+     (+25 strong, +10 partial), and a name that clearly fights it gets a
+     penalty (-10). This is large enough to reorder the top 7, so
+     different filters surface genuinely different names from the same
+     pair instead of the same list in a slightly different order. The
+     bonuses never alter a single letter of a name.
      ===================================================================== */
 
   const has = (w, re) => re.test(w);
@@ -361,58 +368,95 @@
   const softHeavy = (w) => ((w.match(/[lmn]/g) || []).length >= 1);
   const harsh = (w) => has(w, /[xzqk]/);
 
-  function styleBonus(w, style) {
+  // Returns 2 (strong match), 1 (partial), 0 (no match) or -1 (clear mismatch).
+  // Strong matches are judged mainly on the name's ENDING and sound
+  // pattern (the filter's essence), not on a strict length, so a famous
+  // long blend like Brangelina still matches Cute/Romantic (it ends in
+  // "a"). Only Short & Viral is defined by length, so only it penalises
+  // long names.
+  function styleMatch(w, style) {
+    const len = w.length;
+    const endsV = endsVowel(w);
+    const vr = vowelRatio(w);
     switch (style) {
       case "Cute":
-        return (isShort(w) ? 8 : -6) + (endsVowel(w) || /y$/.test(w) ? 5 : 0) + (softHeavy(w) ? 4 : 0);
+        if (endsV || /y$/.test(w)) return 2;
+        if (len <= 6) return 1;
+        return 0;
       case "Romantic":
-        return (endsWithAny(w, ["a", "ia", "ie", "e", "ella", "ina"]) ? 8 : 0) +
-               (vowelRatio(w) >= 0.45 ? 6 : 0) + (w.length >= 5 && w.length <= 8 ? 3 : 0);
+        if (endsWithAny(w, ["a", "ia", "ie", "e", "ella", "ina"])) return 2;
+        if (vr >= 0.45 || (len >= 5 && len <= 8)) return 1;
+        return 0;
       case "Elegant":
-        return (isLong(w) ? 8 : -5) +
-               (endsWithAny(w, ["a", "ia", "ine", "elle", "ana", "ora", "e"]) ? 6 : 0) +
-               (harsh(w) ? -4 : 0);
+        if (len >= 6 && endsWithAny(w, ["a", "ia", "ine", "elle", "ana", "ora", "e"])) return 2;
+        if (endsWithAny(w, ["a", "ia", "ine", "elle", "ana", "ora", "e"]) || len >= 7) return 1;
+        return 0;
       case "Funny":
-        return (endsWithAny(w, ["o", "oo", "zo", "az"]) ? 8 : 0) +
-               (has(w, /([bcdfghjklmnpqrstvwxyz])\1/) ? 5 : 0) + (isShort(w) ? 3 : 0);
+        if (endsWithAny(w, ["o", "oo", "zo", "az"]) || /([bcdfghjklmnpqrstvwxyz])\1/.test(w)) return 2;
+        if (len <= 6) return 1;
+        return 0;
       case "Fantasy":
-        return (isLong(w) ? 8 : -6) +
-               (has(w, /(ae|th|el|wy|ia|yr|ael|iel|or)/) ? 6 : 0) + (harsh(w) ? 2 : 0);
+        if (len >= 6 && /(ae|th|el|wy|ia|yr|ael|iel|or)/.test(w)) return 2;
+        if (/(ae|th|el|wy|ia|yr|ael|iel|or)/.test(w)) return 1;
+        return 0;
       case "Short & Viral":
-        return (w.length <= 6 ? 12 : w.length === 7 ? 5 : -10);
+        if (len <= 6) return 2;
+        if (len === 7) return 1;
+        return -1; // too long for a short viral name
       case "Unique":
-        return (has(w, /[xzvy]/) ? 7 : 0) + (endsWithAny(w, REAL_ENDINGS) ? -3 : 5);
+        if (/[xzvy]/.test(w)) return 2;
+        if (/[qjk]/.test(w) || len <= 5) return 1;
+        return 0;
       default:
         return 0;
     }
   }
 
-  function purposeBonus(w, purpose) {
+  function purposeMatch(w, purpose) {
+    const len = w.length;
+    const endsV = endsVowel(w);
     switch (purpose) {
       case "Romantic Couple":
-        return (endsVowel(w) ? 7 : 0) + (!has(w, /[bcdfghjklmnpqrstvwxyz]{2}/) ? 5 : 0) +
-               (w.length >= 5 && w.length <= 8 ? 3 : 0);
+        if (endsV) return 2;
+        if (len >= 5 && len <= 8) return 1;
+        return 0;
       case "Marriage / Wedding":
-        return (isLong(w) ? 8 : -4) +
-               (endsWithAny(w, ["a", "ia", "ine", "elle", "ana", "ella"]) ? 6 : 0) + (harsh(w) ? -4 : 0);
+        if (len >= 6 && endsWithAny(w, ["a", "ia", "ine", "elle", "ana", "ella"])) return 2;
+        if (endsWithAny(w, ["a", "ia", "ine", "elle", "ana", "ella"])) return 1;
+        return 0;
       case "Fictional Characters":
-        return (w.length >= 5 && w.length <= 9 ? 7 : 0) +
-               (endsWithAny(w, ["a", "us", "on", "iel", "yn", "ia"]) ? 5 : 0);
+        if (len >= 5 && endsWithAny(w, ["a", "us", "on", "iel", "yn", "ia"])) return 2;
+        if (len >= 5 && len <= 9) return 1;
+        return 0;
       case "Celebrity Pair":
-        return (w.length <= 7 ? 9 : -3) + (!isVowel(w[0]) ? 5 : 2); // punchy, hashtag-friendly
+        if (len <= 7 && !isVowel(w[0])) return 2;
+        if (len <= 7) return 1;
+        return 0;
       case "Best Friends":
-        return (isShort(w) ? 8 : -3) + (endsWithAny(w, ["y", "ie", "o", "a"]) ? 5 : 0) + (softHeavy(w) ? 3 : 0);
+        if (len <= 6 && endsWithAny(w, ["y", "ie", "o", "a"])) return 2;
+        if (len <= 6 || endsWithAny(w, ["y", "ie", "o", "a"])) return 1;
+        return 0;
       case "Fantasy Characters":
-        return (isLong(w) ? 9 : -6) + (has(w, /(ae|th|wy|iel|ora|yr|ia|ael)/) ? 6 : 0);
+        if (len >= 6 && /(ae|th|wy|iel|ora|yr|ia|ael)/.test(w)) return 2;
+        if (/(ae|th|wy|iel|ora|yr|ia|ael)/.test(w)) return 1;
+        return 0;
       case "Social Media Username":
-        return (w.length <= 8 ? 9 : -6) + (!has(w, /[bcdfghjklmnpqrstvwxyz]{2}/) ? 6 : 0) +
-               (w.length <= 6 ? 4 : 0);
+        if (len <= 8 && !/[bcdfghjklmnpqrstvwxyz]{2}/.test(w)) return 2;
+        if (len <= 8) return 1;
+        return -1; // too long for a handle
       case "Baby Name Inspiration":
-        return (endsWithAny(w, ["a", "ia", "en", "el", "ah", "on", "ana", "ena", "ina"]) ? 9 : -2) +
-               (w.length >= 4 && w.length <= 7 ? 5 : 0) + (harsh(w) ? -4 : 0);
+        if (endsWithAny(w, ["a", "ia", "en", "el", "ah", "on", "ana", "ena", "ina"])) return 2;
+        if (len >= 4 && len <= 7) return 1;
+        if (/[bcdfghjklmnpqrstvwxyz]$/.test(w)) return -1; // ends in a hard consonant, not a baby name
+        return 0;
       default:
         return 0;
     }
+  }
+
+  function filterBonus(w, style, category) {
+    const toPts = (m) => (m === 2 ? 25 : m === 1 ? 10 : m === -1 ? -10 : 0);
+    return toPts(styleMatch(w, style)) + toPts(purposeMatch(w, category));
   }
 
   /* ---------- category labels for the result cards (display only) ---------- */
@@ -532,8 +576,24 @@
         if (w.startsWith(x.slice(0, 3)) && w.endsWith(y.slice(-3))) s += 45;
         anchor = Math.max(anchor, s);
       }
-      const q = score(w, a, b) + styleBonus(w, style) + purposeBonus(w, category) + anchor;
       const split = explainSplit(w, a, b);
+      // Coverage bonus: reward blends that keep a substantial chunk of BOTH
+      // names. Brangelina keeps 4 letters from Brad and 6 from Angelina;
+      // a thin splice like "Braina" keeps only 3 + 3 and feels generic,
+      // so the famous shape must outrank it.
+      let coverage = 0;
+      if (split) {
+        if (split.front.length >= 3 && split.back.length >= 4) coverage += 10;
+        if (split.front.length >= 4 && split.back.length >= 5) coverage += 10;
+      }
+      // Concatenation penalty: a blend that is just one full name plus a
+      // scrap of the other (Johmary, Maryohn) is not a blend. Penalise it
+      // unless the blend is short (Kimye keeps "Kim" but is only 5 letters).
+      let concat = 0;
+      if (w.length > 6) {
+        if (w.indexOf(a) !== -1 || w.indexOf(b) !== -1) concat -= 15;
+      }
+      const q = score(w, a, b) + filterBonus(w, style, category) + anchor + coverage + concat;
       const explain = split
         ? { pieces: cap(split.front) + " + " + split.back, method: split.method }
         : { pieces: null, method: method };
