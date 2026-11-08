@@ -186,23 +186,37 @@
 
     <section class="section">
       <div class="container prose">
-<p>You've wondered how well you two match, and a quick score feels like a fun way to find out. Friends compare scores, couples laugh over them, and the result often starts a good talk.</p><p>This <strong>love compatibility calculator</strong> is for fun, and it says so right on the result. It turns your two names into a fixed score, so the same pair always gets the same number, and it adds a short reading to match.</p><p>Use it as a light moment, not as a verdict on your bond. Real closeness shows in how you talk, listen, and show up for each other, and no score can measure that. For a blended name to go with your match, try the <a href="/">ship name generator</a>.</p>
+<p>You've wondered how well you two match, and a quick score feels like a fun way to find out. Friends compare scores, couples laugh over them, and the result often starts a good talk. This <strong>love compatibility calculator</strong> is for fun, and it says so right on the result, so enjoy the number and let it spark a real talk instead of settling one.</p>
 <div class="panel" style="margin:24px 0;">
           <h2 class="panel__title">Check your love match</h2>
+          <p style="margin-top:0;">Type both names, add birthdays if you like, then tap the button. You'll get a match score with a short reading.</p>
           <div class="field"><label class="field__label" for="lccA">Your name</label><input class="field__input" id="lccA" type="text" placeholder="Alex" autocomplete="off" /></div>
           <div class="field"><label class="field__label" for="lccB">Partner name</label><input class="field__input" id="lccB" type="text" placeholder="Emma" autocomplete="off" /></div>
           <div class="field"><label class="field__label" for="lccBdA">Your birthday <span class="field__hint">(optional)</span></label><input class="field__input" id="lccBdA" type="date" /></div>
           <div class="field"><label class="field__label" for="lccBdB">Partner birthday <span class="field__hint">(optional)</span></label><input class="field__input" id="lccBdB" type="date" /></div>
-          <button class="btn btn--primary" id="lccBtn" type="button">Calculate compatibility</button>
+          <button class="btn btn--primary" id="lccBtn" type="button" style="width:100%;">Calculate compatibility</button>
           <p class="form-error" id="lccError" hidden>Please type two names first.</p>
+          <p id="lccEmpty" style="margin:16px 0 0;">Your results will show here. Try Alex and Emma first if you'd like a quick sample.</p>
           <div id="lccOut" hidden style="margin-top:16px;">
             <div class="compat is-visible"><span class="compat__score" id="lccScore">0%</span><div class="compat__body"><div class="compat__label">Your love match</div><div class="compat__bar"><span class="compat__fill" id="lccBar" style="width:0%;"></span></div></div></div>
             <p id="lccReading"></p>
             <div class="note-card">This score is for fun only. It comes from your names, not from a real test of your bond.</div>
+            <button class="btn" id="lccCopy" type="button" style="margin-top:12px;">Copy my result</button>
           </div>
         </div>
-        <h2>How it works</h2>
-<p>The tool takes both names, puts them in the same order every time, and turns them into a fixed seed number. That seed sets the score, so the same pair always lands on the same percentage, and adding birthdays only changes the seed when you fill them in.</p><p>Scores of 80 and up read as a strong match, scores from 55 to 79 read as a good match with room to grow, and scores below 55 read as opposites who can still work. Each band comes with a short reading that fits the number.</p><p>Keep the result light and share it with your partner for a laugh. The best use of a <strong>love compatibility calculator</strong> is a fun prompt for a real talk, not a final say on how well you fit.</p>
+        <h2>How to read your score</h2>
+<p>The tool turns your two names into a fixed seed, so the same pair always lands on the same percentage. Alex and Emma will get the same score every time you run them, which keeps the game fair when friends compare. Add birthdays and the seed shifts a little, so the score can move a few points.</p>
+<p>Scores of 80 and up read as a strong match, scores from 55 to 79 read as a good match with room to grow, and scores below 55 read as opposites who can still work. Each band comes with a short reading that fits the number, so read the words next to the score before you judge it. The <strong>love compatibility calculator</strong> bands are broad on purpose, since a name based score can't see your real life.</p>
+<p>A low score means nothing bad on its own, and plenty of happy couples would land low on a name based score. What counts is how you talk, listen, and show up for each other, and no formula can measure that. Treat a low number as a joke to laugh at together, not as a warning sign.</p>
+        <h2>What to do with your result</h2>
+<p>Share the score from the <strong>love compatibility calculator</strong> with your partner and ask what they'd change about the reading. That one question turns a silly number into a real talk about what you both value, and the talk matters far more than the score. Try the <a href="/numerology-compatibility-calculator.html">numerology compatibility calculator</a> next for a fresh angle on the same pair.</p>
+<p>Run the score for friends and family too, since comparing pairs is half the fun. A sibling pair, a parent pair, or a favorite fictional couple can all go through the tool, and the results make easy chat at a party. The <a href="/star-sign-compatibility-calculator.html">star sign compatibility calculator</a> adds birthdays to the mix when you want a second opinion.</p>
+<p>Save the reading that fits you best and use it as a caption or a card note. A playful score makes a light gift tag, and it shows you don't take the number too seriously. Check the <a href="/tools.html">tools page</a> for more couple tools when the party wants another round.</p>
+<p>Keep the score private if your partner would rather not share it. A fun number can feel less fun when it lands in a group chat, so ask before you post it. A shared laugh between the two of you beats a public score every time.</p>
+        <h2>Mistakes to avoid</h2>
+<p>Don't treat the score as a verdict on your bond. A <strong>love compatibility calculator</strong> can't see your shared jokes, your tough weeks, or the way you show up for each other, so a number can't pass judgment on any of that. If a low score stings, close the tab and talk to your partner instead.</p>
+<p>Resist the urge to rerun the tool with tiny spelling changes to chase a higher number. The score comes from a fixed formula, so gaming the input only games yourself, and the fun fades fast. Run it once, laugh at the result, and move on to something real.</p>
+<p>Keep the score out of arguments, since a playful tool makes a poor referee. Pulling a percentage into a real disagreement only adds noise, and it won't settle anything. Take the <a href="/am-i-in-love-quiz.html">am I in love quiz</a> or the <a href="/love-language-quiz.html">love language quiz</a> when you want a prompt that leads to a kinder talk.</p>
       </div>
     </section>
 
@@ -342,6 +356,11 @@ function loveScore(nameA, nameB, bdayA, bdayB){
   var score=35+(hashSeed(seed)%66);
   return score;
 }
+function copyResultText(text, btn, label){
+  function done(){ if(btn){ btn.textContent="Copied"; setTimeout(function(){ btn.textContent=label; },1200); } }
+  if(typeof navigator!=="undefined" && navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, done); }
+  else { done(); }
+}
 function loveReading(score){
   if(score>=80) return "A strong match. You two line up well on the things that count, and the fun part is seeing how far that shared spark takes you.";
   if(score>=55) return "A good match with room to grow. You click in plenty of places, and the gaps are the kind that honest talks and shared plans can close.";
@@ -353,12 +372,15 @@ if(typeof document!=="undefined"){
     if(!btn) return;
     btn.addEventListener("click", function(){
       var score=loveScore(document.getElementById("lccA").value, document.getElementById("lccB").value, document.getElementById("lccBdA").value, document.getElementById("lccBdB").value);
-      if(score===null){ err.hidden=false; out.hidden=true; return; }
-      err.hidden=true; out.hidden=false;
+      var em=document.getElementById("lccEmpty");
+      if(score===null){ err.hidden=false; out.hidden=true; if(em) em.hidden=false; return; }
+      err.hidden=true; out.hidden=false; if(em) em.hidden=true;
       document.getElementById("lccScore").textContent=score+"%";
       document.getElementById("lccBar").style.width=score+"%";
       document.getElementById("lccReading").textContent=loveReading(score);
     });
+    var cp=document.getElementById("lccCopy");
+    if(cp){ cp.addEventListener("click", function(){ copyResultText(document.getElementById("lccScore").textContent+" - "+document.getElementById("lccReading").textContent, cp, "Copy my result"); }); }
   });
 }
 </script>

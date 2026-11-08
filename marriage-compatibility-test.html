@@ -186,11 +186,12 @@
 
     <section class="section">
       <div class="container prose">
-<p>Marriage runs on daily habits more than grand gestures. How you handle money, chores, fights, and free weekends shapes the years ahead, and it's easy to skip those talks until a small clash turns big.</p><p>This <strong>marriage compatibility test</strong> asks 10 quick questions with three choices each. Answer honestly, one question at a time, and you'll get a score out of 100 plus a short reading that points at your strong spots and your gaps.</p><p>Treat the result as a starting point for a talk, not as a pass or fail mark. The best use of the score is to spot one habit you can improve together this week. And if you want a shared name for the two of you, the <a href="/">ship name generator</a> can build one in seconds.</p>
+<p>Marriage runs on daily habits more than grand gestures. How you handle money, chores, fights, and free weekends shapes the years ahead, and it's easy to skip those talks until a small clash turns big. This <strong>marriage compatibility test</strong> asks 10 quick questions with three choices each, so you can spot your strong spots and your gaps in a few minutes.</p>
 <div class="panel" style="margin:24px 0;" id="mctBox">
           <h2 class="panel__title">Take the test</h2>
-          <p>Ten questions, three choices each. Pick the answer that fits your life together most days.</p>
-          <button class="btn btn--primary" id="mctStart" type="button">Start the test</button>
+          <p style="margin-top:0;">Ten questions, three choices each. Pick the answer that fits your life together most days, and be honest for a score that means something.</p>
+          <button class="btn btn--primary" id="mctStart" type="button" style="width:100%;">Start the test</button>
+          <p id="mctEmpty" style="margin:16px 0 0;">Your score will show here after you answer all 10 questions.</p>
           <div id="mctQuiz" hidden>
             <p><strong id="mctProgress">Question 1 of 10</strong></p>
             <div class="compat__bar" style="margin-bottom:16px;"><span class="compat__fill" id="mctBar" style="width:0%;"></span></div>
@@ -200,11 +201,23 @@
           <div id="mctResult" hidden>
             <div class="compat is-visible"><span class="compat__score" id="mctScore">0 / 100</span><div class="compat__body"><div class="compat__label">Your marriage compatibility score</div><div class="compat__bar"><span class="compat__fill" id="mctBar2" style="width:0%;"></span></div></div></div>
             <p id="mctReading"></p>
-            <button class="btn btn--primary" id="mctRetake" type="button">Retake the test</button>
+            <button class="btn" id="mctCopy" type="button" style="margin-bottom:8px;">Copy my result</button>
+            <button class="btn btn--primary" id="mctRetake" type="button" style="width:100%;">Retake the test</button>
           </div>
         </div>
-        <h2>How it works</h2>
-<p>Each question covers one part of shared life, like money, chores, fights, family, and future plans. The first choice in each question scores 10 points, the middle choice scores 6, and the last choice scores 2, so the top score is 100.</p><p>The progress bar shows where you are in the test, and your answers stay on this page only. Nothing gets saved or sent anywhere, so you can answer with full honesty.</p><p>Scores of 80 and up read as a strong match, scores from 55 to 79 read as a good match with room to grow, and scores below 55 point at habits worth a calm talk. Use your <strong>marriage compatibility test</strong> result to pick one small change and try it together.</p>
+        <h2>How to take the test well</h2>
+<p>Take the test together and talk over each answer as you go, since the talk is the real prize. The <strong>marriage compatibility test</strong> gives you 10 questions about money, chores, fights, family, and plans, and each one opens a door to a chat you may have skipped. Answer for most days, not for your best day, or the score will flatter you.</p>
+<p>Each question scores 10 points for the first choice, 6 for the middle choice, and 2 for the last choice, so the top score is 100. That scoring rewards honest habits over wishful ones, which is why the middle choice exists at all. If you pick the top answer for every question, ask yourself if that's real life or wishful thinking.</p>
+<p>Your answers stay on this page only, since nothing gets saved or sent anywhere. That privacy lets you answer with full honesty, even on the questions about money and fights. Take it apart and compare scores after if a joint run feels too tense, since both ways can start a useful talk.</p>
+        <h2>What to do with your result</h2>
+<p>Scores of 80 and up on the <strong>marriage compatibility test</strong> read as a strong match, scores from 55 to 79 read as a good match with room to grow, and scores below 55 point at habits worth a calm talk. Read the short note next to your number, then pick the question where you scored lowest. One small change on that one habit beats a grand plan you won't keep.</p>
+<p>Turn the lowest scoring question into a plan you can try this week. If chores scored low, agree who does what for seven days and check in on Sunday. If money scored low, sit down for twenty minutes and agree one shared rule. Small tests like these show fast whether a fix works, and the <a href="/love-compatibility-calculator.html">love compatibility calculator</a> gives you a lighter score to pair with it.</p>
+<p>Retake the test in a month and compare the numbers. A fresh score shows whether your small change stuck, and a flat score tells you the fix needs a rethink. The <a href="/tools.html">tools page</a> and the <a href="/love-language-quiz.html">love language quiz</a> give you more prompts when you want to keep the talks going.</p>
+<p>Write the plan down where you'll both see it, like a note on the fridge or a shared phone reminder. A spoken plan fades fast, while a written one keeps you both honest through the week. Check the note together on Sunday and decide what to try next.</p>
+        <h2>Mistakes to avoid</h2>
+<p>Don't treat the result as a pass or fail mark. A <strong>marriage compatibility test</strong> is a fun self check built from common couple questions, not a real diagnosis, and a low score means a few daily habits need work, not that the marriage is doomed. If a rough patch feels bigger than a quiz, talk to a licensed counselor together.</p>
+<p>Let each person answer for themselves instead of debating every choice mid test. The test works when each answer reflects real life, and a debate over one question can hijack the whole run. Note where you disagree, and save the debate for after the score lands.</p>
+<p>Name the low spots out loud after you see the score, since the gaps only help when you both look at them. Pick one gap and agree one step to try this week, then check in on it together. The <a href="/attachment-style-quiz.html">attachment style quiz</a> and the <a href="/deep-questions-for-couples.html">deep questions for couples</a> page both give you gentle ways to open that talk.</p>
       </div>
     </section>
 
@@ -348,6 +361,11 @@ function marriageScore(answers){
   for(var i=0;i<answers.length;i++){ total+= [10,6,2][answers[i]] || 0; }
   return total;
 }
+function copyResultText(text, btn, label){
+  function done(){ if(btn){ btn.textContent="Copied"; setTimeout(function(){ btn.textContent=label; },1200); } }
+  if(typeof navigator!=="undefined" && navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, done); }
+  else { done(); }
+}
 function marriageReading(score){
   if(score>=80) return "A strong match. You two talk, laugh, and plan as a team, and that shared rhythm is a solid base for married life.";
   if(score>=55) return "A good match with room to grow. You agree on plenty, and the spots where you differ are clear enough to work on together.";
@@ -379,8 +397,10 @@ if(typeof document!=="undefined"){
       document.getElementById("mctBar2").style.width=score+"%";
       document.getElementById("mctReading").textContent=marriageReading(score);
     }
-    startBtn.addEventListener("click", function(){ startBtn.hidden=true; document.getElementById("mctQuiz").hidden=false; render(); });
+    startBtn.addEventListener("click", function(){ startBtn.hidden=true; var em=document.getElementById("mctEmpty"); if(em) em.hidden=true; document.getElementById("mctQuiz").hidden=false; render(); });
     document.getElementById("mctRetake").addEventListener("click", function(){ idx=0; answers=[]; document.getElementById("mctResult").hidden=true; document.getElementById("mctQuiz").hidden=false; render(); });
+    var cp=document.getElementById("mctCopy");
+    if(cp){ cp.addEventListener("click", function(){ copyResultText(document.getElementById("mctScore").textContent+" - "+document.getElementById("mctReading").textContent, cp, "Copy my result"); }); }
   });
 }
 </script>

@@ -177,17 +177,33 @@
     </section>
     <section class="section">
       <div class="container prose">
-        <p>The big day is coming, and this <strong>wedding countdown</strong> keeps the wait fun. Enter your wedding date and watch the days, hours, minutes, and seconds tick down live.</p>
-        <p>It is a sweet way to share the excitement with your partner, your family, and your friends. Check it in the morning, check it at night, and watch the numbers shrink as the day draws near.</p>
-        <p>Pick a future date, press the button, and your live countdown starts right away.</p>
-<div class="note-card"><p><label for="wedDate">Pick your wedding date</label></p><p><input id="wedDate" type="date" /></p><p><button class="btn btn--primary" id="wedBtn" type="button">Start my countdown</button></p><p id="wedError"></p><div id="wedResult"></div></div>
-        <h2>How it works</h2>
-        <p>This <strong>wedding countdown</strong> takes your wedding date and counts the time left to it, updating every second. You will see days, hours, minutes, and seconds, all ticking down together.</p>
-        <p>The countdown starts at midnight on your wedding day, so the final hours lead right into the morning of the celebration. If the date has already passed, you will see a kind note asking for a future date.</p>
-        <p>Keep the page open to watch it tick, or come back any day and enter the date again for a fresh count.</p>
-        <p>While you wait, have fun with the <a href="/">ship name generator</a> and blend your names into one.</p>
+<p>The big day is coming, and this <strong>wedding countdown</strong> keeps the wait fun. Enter your wedding date and watch the days, hours, minutes, and seconds tick down live, second by second. It's a sweet way to share the excitement with your partner, your family, and your friends while the plans come together.</p>
+<div class="panel" style="margin:24px 0;">
+          <h2 class="panel__title">Count down to your big day</h2>
+          <p style="margin-top:0;">Pick your wedding date, then tap the button. You'll see a live countdown in days, hours, minutes, and seconds.</p>
+          <div class="field"><label class="field__label" for="wedDate">Your wedding date</label><input class="field__input" id="wedDate" type="date" /></div>
+          <button class="btn btn--primary" id="wedBtn" type="button" style="width:100%;">Start my countdown</button>
+          <p class="form-error" id="wedError"></p>
+          <div id="wedResult" style="margin-top:16px;"><p style="margin:0;">Your countdown will show here. Pick a future date to get started.</p></div>
+          <button class="btn" id="wedCopy" type="button" hidden style="margin-top:12px;">Copy countdown</button>
+        </div>
+        <h2>How to set up your countdown</h2>
+<p>Pick a future date, press the button, and your live countdown starts right away. The <strong>wedding countdown</strong> counts the time left to midnight at the start of your wedding day, so the final hours lead right into the morning of the celebration. If the date has already passed, you'll see a kind note asking for a future date.</p>
+<p>The count shows days, hours, minutes, and seconds, all ticking down together and updating every second. A count like 214 days feels far away, while the hours and minutes make the wait feel real, so check it in the morning and watch the numbers shrink. Keep the page open to watch it tick, or come back any day and enter the date again for a fresh count.</p>
+<p>Double check the date before you share it, since a wrong month gives everyone the wrong wait. Your invite date and your countdown date should match, or guests will spot the gap. If plans shift, just enter the new date and the count resets in a second.</p>
+        <h2>What to do with your countdown</h2>
+<p>Share the count from your <strong>wedding countdown</strong> with your wedding party so everyone feels the build up together. A screenshot of the days left makes a fun group chat post, and the copy button under the result grabs the live numbers in one tap. The <a href="/anniversary-calculator.html">anniversary calculator</a> will take over once the big day has passed.</p>
+<p>Use the milestones in the count to pace your planning. At 100 days left, lock in the big vendors; at 30 days left, confirm the guest list and the seating; in the final week, switch to rest and small tasks. The <a href="/wedding-hashtag-generator.html">wedding hashtag generator</a> helps you tag the photos when the day arrives.</p>
+<p>Check the count at the same time each day if the wait feels long. A daily peek turns a far off date into a steady drumbeat, and each smaller number feels like progress. The <a href="/tools.html">tools page</a> holds more wedding tools when you want a break from the planning.</p>
+<p>Save a screenshot at each big milestone, like 100 days and 30 days, so you can look back at the wait once the day has passed. Those shots turn into a small story of the build up, and they make sweet posts after the wedding. The countdown ends at midnight, yet the memories from the wait stick around.</p>
+<p>Tie your RSVP deadline to a number on the count, like 45 days left, and the count becomes a planning tool instead of a decoration. Guests respond faster when they see a clear date, and vendors can plan around the same number. Put the RSVP date on the invite next to the wedding date, so the countdown and the deadline point at the same day.</p>
+        <h2>Mistakes to avoid</h2>
+<p>Don't share a countdown built from the wrong date. A <strong>wedding countdown</strong> is only as good as the date you typed, so match it against the invite before you post a screenshot. One wrong digit can confuse guests and vendors alike.</p>
+<p>Let the count build joy, not stress. The numbers are meant to build excitement, so if they make you anxious, check them once a week instead of once an hour. Planning works best in calm blocks, not in a race against the clock.</p>
+<p>Enjoy the wait itself instead of wishing it away. The months before a wedding hold tastings, fittings, and small wins worth savoring, and the countdown should mark those, not just the finish line. Blend your names with the <a href="/couple-name-generator.html">couple name generator</a> while you wait, and save the <a href="/newlywed-game-questions.html">newlywed game questions</a> for the reception.</p>
       </div>
     </section>
+
     <section class="section section--surface">
       <div class="container">
         <div class="section__head">
@@ -304,6 +320,8 @@
   var input = document.getElementById("wedDate");
   var err = document.getElementById("wedError");
   var out = document.getElementById("wedResult");
+  var copyBtn = document.getElementById("wedCopy");
+  if (copyBtn) { copyBtn.addEventListener("click", function(){ var t = out.textContent || ""; function done(){ copyBtn.textContent = "Copied"; setTimeout(function(){ copyBtn.textContent = "Copy countdown"; }, 1200); } if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(done, done); } else { done(); } }); }
   function pad(n){ return (n < 10 ? "0" : "") + n; }
   function tick(target){
     var now = new Date();
@@ -321,13 +339,14 @@
   btn.addEventListener("click", function(){
     err.textContent = "";
     var val = input.value;
-    if (!val) { err.textContent = "Please pick a date first."; return; }
+    if (!val) { err.textContent = "Please pick a date first."; if (copyBtn) { copyBtn.hidden = true; } return; }
     var parts = val.split("-");
     var target = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 0, 0, 0);
     var today = new Date(); today.setHours(0, 0, 0, 0);
-    if (target <= today) { err.textContent = "Please pick a future date for your wedding."; return; }
+    if (target <= today) { err.textContent = "Please pick a future date for your wedding."; if (copyBtn) { copyBtn.hidden = true; } return; }
     if (timer) { clearInterval(timer); }
     tick(target);
+    if (copyBtn) { copyBtn.hidden = false; }
     timer = setInterval(function(){ tick(target); }, 1000);
   });
 })();

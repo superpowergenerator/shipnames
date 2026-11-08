@@ -186,25 +186,39 @@
 
     <section class="section">
       <div class="container prose">
-<p>Friends love to compare star signs, and couples often ask if their signs get along. Fire signs sound bold, water signs sound deep, and the mix can spark a fun debate over coffee.</p><p>This <strong>star sign compatibility calculator</strong> finds each sign from a birthday, or lets you pick signs straight from a list. It shows both signs and their elements, then gives a match percentage with a short reading.</p><p>Keep it light and enjoy the result for what it is: a playful take on an old tradition. Your real bond still comes down to how you talk and care for each other. For a shared name to match your signs, try the <a href="/">ship name generator</a>.</p>
+<p>Friends love to compare star signs, and couples often ask if their signs get along. Fire signs sound bold, water signs sound deep, and the mix can spark a fun debate over coffee. This <strong>star sign compatibility calculator</strong> finds each sign from a birthday, or lets you pick signs straight from a list, then shows both signs and their elements with a match percentage.</p>
 <div class="panel" style="margin:24px 0;">
           <h2 class="panel__title">Check your star signs</h2>
+          <p style="margin-top:0;">Enter two birthdays, or pick two signs from the lists, then tap the button. You'll see both signs, their elements, and your match.</p>
           <div class="field"><label class="field__label" for="ssM1">Person 1 birth month (1-12)</label><input class="field__input" id="ssM1" type="number" min="1" max="12" placeholder="3" /></div>
           <div class="field"><label class="field__label" for="ssD1">Person 1 birth day (1-31)</label><input class="field__input" id="ssD1" type="number" min="1" max="31" placeholder="21" /></div>
           <div class="field"><label class="field__label" for="ssS1">Or pick person 1 sign</label><select class="field__input" id="ssS1"><option value="">Pick a sign</option><option>Aries</option><option>Taurus</option><option>Gemini</option><option>Cancer</option><option>Leo</option><option>Virgo</option><option>Libra</option><option>Scorpio</option><option>Sagittarius</option><option>Capricorn</option><option>Aquarius</option><option>Pisces</option></select></div>
           <div class="field"><label class="field__label" for="ssM2">Person 2 birth month (1-12)</label><input class="field__input" id="ssM2" type="number" min="1" max="12" placeholder="7" /></div>
           <div class="field"><label class="field__label" for="ssD2">Person 2 birth day (1-31)</label><input class="field__input" id="ssD2" type="number" min="1" max="31" placeholder="23" /></div>
           <div class="field"><label class="field__label" for="ssS2">Or pick person 2 sign</label><select class="field__input" id="ssS2"><option value="">Pick a sign</option><option>Aries</option><option>Taurus</option><option>Gemini</option><option>Cancer</option><option>Leo</option><option>Virgo</option><option>Libra</option><option>Scorpio</option><option>Sagittarius</option><option>Capricorn</option><option>Aquarius</option><option>Pisces</option></select></div>
-          <button class="btn btn--primary" id="ssBtn" type="button">Calculate sign match</button>
+          <button class="btn btn--primary" id="ssBtn" type="button" style="width:100%;">Calculate sign match</button>
           <p class="form-error" id="ssError" hidden>Please add two birthdays or pick two signs first.</p>
+          <p id="ssEmpty" style="margin:16px 0 0;">Your results will show here. Try March 21 and July 23 first if you'd like a quick sample.</p>
           <div id="ssOut" hidden style="margin-top:16px;">
             <p>Signs: <strong id="ssA">-</strong> and <strong id="ssB">-</strong></p>
             <div class="compat is-visible"><span class="compat__score" id="ssPct">0%</span><div class="compat__body"><div class="compat__label">Your star sign match</div><div class="compat__bar"><span class="compat__fill" id="ssBar" style="width:0%;"></span></div></div></div>
             <p id="ssReading"></p>
+            <button class="btn" id="ssCopy" type="button" style="margin-top:12px;">Copy my result</button>
           </div>
         </div>
-        <h2>How it works</h2>
-<p>Each sign covers a set span of dates in the year. Aries runs March 21 to April 19, Taurus runs April 20 to May 20, Gemini runs May 21 to June 20, Cancer runs June 21 to July 22, Leo runs July 23 to August 22, and Virgo runs August 23 to September 22. Libra runs September 23 to October 22, Scorpio runs October 23 to November 21, Sagittarius runs November 22 to December 21, Capricorn runs December 22 to January 19, Aquarius runs January 20 to February 18, and Pisces runs February 19 to March 20.</p><p>Each sign also has an element: fire for Aries, Leo, and Sagittarius; earth for Taurus, Virgo, and Capricorn; air for Gemini, Libra, and Aquarius; and water for Cancer, Scorpio, and Pisces. The same element scores 90, fire with air or earth with water scores 82, fire with earth or air with water scores 65, and fire with water or earth with air scores 55.</p><p>If you were born on a cusp day, try both signs next to each other and see which reading feels closer. The <strong>star sign compatibility calculator</strong> works best as a fun chat starter, not as a verdict on your bond.</p>
+        <h2>How to read your signs</h2>
+<p>Each sign covers a set span of dates in the year, and the tool reads your birthday against those spans. Aries runs March 21 to April 19, Taurus runs April 20 to May 20, and the rest follow in order through Pisces, which runs February 19 to March 20. If you were born on March 21, try Aries first, since that's the first day of its span.</p>
+<p>Fire covers Aries, Leo, and Sagittarius; earth covers Taurus, Virgo, and Capricorn; air covers Gemini, Libra, and Aquarius; and water covers Cancer, Scorpio, and Pisces. The <strong>star sign compatibility calculator</strong> scores the same element at 90, fire with air or earth with water at 82, and the tenser mixes lower. Elements drive the score, so two signs that share one tend to top the list.</p>
+<p>If you were born on a cusp day, try both signs next to each other and see which reading feels closer. Cusp dates can vary by year, so the sign on the edge may flip, and the tool lets you pick signs straight from the list when a birthday lands on the line. A quick check of both options beats guessing.</p>
+        <h2>What to do with your result</h2>
+<p>Use the result from the <strong>star sign compatibility calculator</strong> as a chat starter on a date night or a long drive. Ask your partner which part of the reading fits and which part misses, and you'll learn more from that talk than from the percentage. The <a href="/numerology-compatibility-calculator.html">numerology compatibility calculator</a> gives you a numbers based take on the same pair when you want a second round.</p>
+<p>Compare your elements when you plan something together. Fire and air pairs often love fast plans and big outings, while earth and water pairs may prefer slow weekends at home, and naming that gap helps you pick plans you both enjoy. The <a href="/love-compatibility-calculator.html">love compatibility calculator</a> adds a name based score to the mix.</p>
+<p>Run the signs of friends and family too, since group comparisons make easy party chat. A sibling pair or a parent pair can go through the tool in seconds, and the results give everyone something to laugh about. The <a href="/tools.html">tools page</a> holds the rest of the couple tools when the group wants more.</p>
+<p>Save both signs and their elements in a note on your phone, since you'll want them again the next time signs come up. A saved pair means you can jump straight to the talk instead of retyping birthdays. Friends will ask for their own readings soon enough, so keep the tool handy.</p>
+        <h2>Mistakes to avoid</h2>
+<p>Don't treat the score as proof about your bond. A <strong>star sign compatibility calculator</strong> is fun, and there's no proof that birth dates decide how two people get along. Trust your real talks and shared life instead, and let the stars stay in the background.</p>
+<p>Keep a low mix out of disagreements, since a playful contrast isn't a flaw in either person. A fire and water score of 55 describes a lively contrast, and it isn't a flaw in either person, and pulling it into a real argument only adds noise. If a talk gets tense, put the tool away and listen first.</p>
+<p>Check both signs when a birthday sits on the edge of a span. A March 20 birthday may read as Pisces in one year and Aries in another, so a single run can mislead you. Try the <a href="/love-language-quiz.html">love language quiz</a> or the <a href="/is-he-the-one-quiz.html">is he the one quiz</a> when you want a prompt that looks at how you act, not when you were born.</p>
       </div>
     </section>
 
@@ -367,6 +381,11 @@ function signCompatibility(s1, s2){
   if(pair==="earth+fire" || pair==="air+water") return {pct:65, note:"Your elements pull in different ways, so clear talks help you stay in step."};
   return {pct:55, note:"Your elements clash at times, yet that contrast can keep things lively when you stay patient."};
 }
+function copyResultText(text, btn, label){
+  function done(){ if(btn){ btn.textContent="Copied"; setTimeout(function(){ btn.textContent=label; },1200); } }
+  if(typeof navigator!=="undefined" && navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, done); }
+  else { done(); }
+}
 function starReading(s1, s2, res){
   return s1.name+" is a "+s1.element+" sign and "+s2.name+" is a "+s2.element+" sign. "+res.note+" Give each other room to be yourselves, and use the shared spark to plan fun things together.";
 }
@@ -380,15 +399,18 @@ if(typeof document!=="undefined"){
       var s1=document.getElementById("ssS1").value, s2=document.getElementById("ssS2").value;
       var a=s1 ? SIGNS.filter(function(x){return x.name===s1;})[0] : signFromDate(m1,d1);
       var b=s2 ? SIGNS.filter(function(x){return x.name===s2;})[0] : signFromDate(m2,d2);
-      if(!a || !b){ err.hidden=false; out.hidden=true; return; }
+      var em=document.getElementById("ssEmpty");
+      if(!a || !b){ err.hidden=false; out.hidden=true; if(em) em.hidden=false; return; }
       var res=signCompatibility(a,b);
-      err.hidden=true; out.hidden=false;
+      err.hidden=true; out.hidden=false; if(em) em.hidden=true;
       document.getElementById("ssA").textContent=a.name+" ("+a.element+")";
       document.getElementById("ssB").textContent=b.name+" ("+b.element+")";
       document.getElementById("ssPct").textContent=res.pct+"%";
       document.getElementById("ssBar").style.width=res.pct+"%";
       document.getElementById("ssReading").textContent=starReading(a,b,res);
     });
+    var cp=document.getElementById("ssCopy");
+    if(cp){ cp.addEventListener("click", function(){ copyResultText(document.getElementById("ssA").textContent+" and "+document.getElementById("ssB").textContent+" - "+document.getElementById("ssPct").textContent+" - "+document.getElementById("ssReading").textContent, cp, "Copy my result"); }); }
   });
 }
 </script>
