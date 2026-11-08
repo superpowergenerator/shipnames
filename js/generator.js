@@ -380,8 +380,11 @@
     const vr = vowelRatio(w);
     switch (style) {
       case "Cute":
-        if (endsV || /y$/.test(w)) return 2;
-        if (len <= 6) return 1;
+        // Short is cute too: a 6-letter blend that ends in a consonant
+        // (Tayvis) is just as cute as one that ends in a vowel. Judging
+        // Cute only by the ending pushed famous blends down.
+        if (endsV || /y$/.test(w) || len <= 6) return 2;
+        if (len <= 8 || vr >= 0.4) return 1;
         return 0;
       case "Romantic":
         if (endsWithAny(w, ["a", "ia", "ie", "e", "ella", "ina"])) return 2;
@@ -445,8 +448,13 @@
         if (len <= 8) return 1;
         return -1; // too long for a handle
       case "Baby Name Inspiration":
-        if (endsWithAny(w, ["a", "ia", "en", "el", "ah", "on", "ana", "ena", "ina"])) return 2;
-        if (len >= 4 && len <= 7) return 1;
+        // A baby-name blend must be short and name-like: the ending alone
+        // is not enough, because every "-lina" blend ends in "ina" and
+        // would match Baby Name just as strongly as Romantic Couple.
+        // Requiring length 4-7 for a strong match lets the short names
+        // (Braina, Brana, Adina) rise above the long "-lina" blends.
+        if (endsWithAny(w, ["a", "ia", "en", "el", "ah", "on", "ana", "ena", "ina"]) && len >= 4 && len <= 7) return 2;
+        if (endsWithAny(w, ["a", "ia", "en", "el", "ah", "on", "ana", "ena", "ina"]) || (len >= 4 && len <= 7)) return 1;
         if (/[bcdfghjklmnpqrstvwxyz]$/.test(w)) return -1; // ends in a hard consonant, not a baby name
         return 0;
       default:
@@ -456,7 +464,9 @@
 
   function filterBonus(w, style, category) {
     const toPts = (m) => (m === 2 ? 25 : m === 1 ? 10 : m === -1 ? -10 : 0);
-    return toPts(styleMatch(w, style)) + toPts(purposeMatch(w, category));
+    // The purpose (category) weighs double the style: switching the
+    // purpose must visibly change the names, not just relabel them.
+    return toPts(styleMatch(w, style)) + 2 * toPts(purposeMatch(w, category));
   }
 
   /* ---------- category labels for the result cards (display only) ---------- */
