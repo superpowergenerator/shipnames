@@ -145,22 +145,25 @@
      ===================================================================== */
 
   // Each candidate carries the join method that built it, so the UI can
-  // explain every name truthfully ("Bra + ngelina · Start + end").
+  // explain every name truthfully ("Bra + ngelina · Start + end"), and
+  // the order it was built in (A+B or B+A), so the selector can tell a
+  // reversed blend from the same blend the other way round.
   function buildCandidates(a, b) {
     const out = [];
     const cross = (name1, name2) => {
+      const order = name1 === a ? "AB" : "BA";
       const pre = prefixParts(name1);
       const suf = suffixParts(name2);
-      for (const p of pre) for (const s of suf) out.push({ word: p + s, method: "Start + end" });
+      for (const p of pre) for (const s of suf) out.push({ word: p + s, method: "Start + end", order: order });
       // syllable-only pairings (lastSyl + lastSyl gives things like "Lexma")
-      out.push({ word: lastSyl(name1) + lastSyl(name2), method: "Syllable swap" });
-      out.push({ word: firstSyl(name1) + lastSyl(name2), method: "Syllable swap" });
-      out.push({ word: firstSyl(name1) + last2Syl(name2), method: "Syllable swap" });
+      out.push({ word: lastSyl(name1) + lastSyl(name2), method: "Syllable swap", order: order });
+      out.push({ word: firstSyl(name1) + lastSyl(name2), method: "Syllable swap", order: order });
+      out.push({ word: firstSyl(name1) + last2Syl(name2), method: "Syllable swap", order: order });
       // Long blends: two syllables from the front of one name + two (or one)
       // from the end of the other. These are the graceful, elegant and
       // fantasy shapes (Alexandra + Isabella -> "Alexabella", "Alebella").
-      out.push({ word: first2Syl(name1) + last2Syl(name2), method: "Long blend" });
-      out.push({ word: first2Syl(name1) + lastSyl(name2), method: "Long blend" });
+      out.push({ word: first2Syl(name1) + last2Syl(name2), method: "Long blend", order: order });
+      out.push({ word: first2Syl(name1) + lastSyl(name2), method: "Long blend", order: order });
     };
     cross(a, b);
     cross(b, a);
@@ -168,12 +171,13 @@
     // This is what finds blends the fixed part-lists miss (e.g. "lex" + "lex"
     // for two identical names). The quality gate below does the filtering.
     const subCross = (n1, n2) => {
+      const order = n1 === a ? "AB" : "BA";
       for (let i = 0; i < n1.length; i++) {
         for (let j = i + 2; j <= n1.length; j++) {
           const f = n1.slice(i, j);
           for (let k = 0; k < n2.length; k++) {
             for (let l = k + 2; l <= n2.length; l++) {
-              out.push({ word: f + n2.slice(k, l), method: "Start + end" });
+              out.push({ word: f + n2.slice(k, l), method: "Start + end", order: order });
             }
           }
         }
@@ -182,25 +186,24 @@
     subCross(a, b);
     subCross(b, a);
     const om1 = overlapMerge(a, b);
-    if (om1) out.push({ word: om1, method: "Shared sound" });
+    if (om1) out.push({ word: om1, method: "Shared sound", order: "AB" });
     const om2 = overlapMerge(b, a);
-    if (om2) out.push({ word: om2, method: "Shared sound" });
-    // Echo blends: repeat the natural 2-letter nickname chunk from the
-    // start of either name (Lucas + Luna -> "Lulu", Mia + Maya -> "Mimi").
-    // These are the playful, funny and cute shapes. Only the first two
-    // letters count: a middle chunk (like "ca" in Lucas) would repeat
-    // into nonsense ("Caca"). The chunk comes from one name only, so the
-    // contribution check below treats Echo shapes specially.
-    // Blocklist: laughter sounds (ha, he, hi, ho, hu) and "ka" (Kaka)
-    // read as giggles or rude words, not as names.
+    if (om2) out.push({ word: om2, method: "Shared sound", order: "BA" });
+    // Echo blends: repeat a shared 2-letter sound from the start of
+    // either name (Lucas + Luna -> "Lulu"). The chunk must appear in
+    // BOTH names: repeating a chunk from one name only (Alex -> "Alal",
+    // Emma -> "Emem") does not combine the two names at all, it is just
+    // a nickname for one person. Only the first two letters count, and
+    // the blocklist keeps laughter sounds and "ka" out.
     const ECHO_BLOCK = new Set(["ha", "he", "hi", "ho", "hu", "ka"]);
     const echoChunks = new Set();
     for (const n of [a, b]) {
       const c = n.slice(0, 2);
-      if (/[aeiou]/.test(c) && !ECHO_BLOCK.has(c)) echoChunks.add(c);
+      const other = n === a ? b : a;
+      if (/[aeiou]/.test(c) && !ECHO_BLOCK.has(c) && other.indexOf(c) !== -1) echoChunks.add(c);
     }
     echoChunks.forEach((c) => {
-      out.push({ word: c + c, method: "Echo" });
+      out.push({ word: c + c, method: "Echo", order: "AB" });
     });
     return out;
   }
@@ -567,6 +570,92 @@
   }
 
   /* =====================================================================
+     Method-first selection (research, 2026-11-08): the old picker took
+     the top 7 by score, which were 7 cuts of ONE blend (Lialivia, Liavia,
+     Liamivia...). Real ship names differ by method, order and length, not
+     by one moved letter. So each result now comes from a different slot,
+     and anything too similar to a kept name is dropped outright.
+     ===================================================================== */
+
+  // Which kind of blend this is. Seven slot keys, one per result in a
+  // batch: overlap, echo, whole-name, short (by order), blend (by order).
+  // Echo gets its own slot ONLY under Funny, where a repeated chunk is
+  // the joke (Lucas + Luna -> Lulu). Under any other style an echo is
+  // just a short blend and competes for the short slot on its score;
+  // giving it its own slot there forced baby-talk echoes (Alal, Emem)
+  // into the top 7 for Cute, where they do not belong.
+  function slotKey(w, method, order, a, b, style) {
+    if (method === "Shared sound") return "overlap";
+    if (style === "Funny" && (method === "Echo" || isEcho(w))) return "echo";
+    if (w.startsWith(a) || w.startsWith(b)) return "whole";
+    if (w.length <= 6) return "short-" + order;
+    return "blend-" + order;
+  }
+
+  // Edit distance (Levenshtein): how many single-letter changes turn one
+  // word into another. Two names within distance 2 are the same blend
+  // with the cut moved a letter, so the later one adds nothing.
+  function levenshtein(x, y) {
+    const m = x.length, n = y.length;
+    if (m === 0) return n;
+    if (n === 0) return m;
+    let prev = new Array(n + 1);
+    let cur = new Array(n + 1);
+    for (let j = 0; j <= n; j++) prev[j] = j;
+    for (let i = 1; i <= m; i++) {
+      cur[0] = i;
+      for (let j = 1; j <= n; j++) {
+        const cost = x[i - 1] === y[j - 1] ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+      }
+      const tmp = prev; prev = cur; cur = tmp;
+    }
+    return prev[n];
+  }
+
+  // Too similar to a name already kept? Within edit distance 1, or the
+  // same first 3 and last 3 letters (the same blend family). Distance 2
+  // is NOT enough on its own: a short echo (Lulu, 4 letters) sits 2
+  // edits from a longer blend (Lunalu, 6 letters) yet reads as a
+  // completely different name, so it must survive. The first-3/last-3
+  // rule catches the real near-duplicates (Liavia / Liamivia), which
+  // share their opening and ending.
+  function tooSimilar(item, kept) {
+    for (const k of kept) {
+      if (levenshtein(item.key, k.key) <= 1) return true;
+      if (item.key.length >= 6 && k.key.length >= 6 &&
+          item.key.slice(0, 3) === k.key.slice(0, 3) &&
+          item.key.slice(-3) === k.key.slice(-3)) return true;
+    }
+    return false;
+  }
+
+  // Curate the q-sorted list into a diverse order. Each round takes at
+  // most one candidate per slot, so the first batch is one of each kind
+  // (overlap, echo, whole-name, short, blend, both orders) and the next
+  // batch is the second-best of each kind. Near-duplicates are dropped
+  // outright, never deferred to a later batch.
+  function curate(ranked) {
+    const curated = [];
+    let remaining = ranked.slice();
+    while (remaining.length > 0) {
+      const used = new Set();
+      const next = [];
+      for (const c of remaining) {
+        if (!used.has(c.slot) && !tooSimilar(c, curated)) {
+          curated.push(c);
+          used.add(c.slot);
+        } else {
+          next.push(c);
+        }
+      }
+      if (next.length === remaining.length) break; // nothing new passes; rest are near-duplicates
+      remaining = next;
+    }
+    return curated;
+  }
+
+  /* =====================================================================
      Main entry point — unchanged public shape:
        generate({ name1, name2, category, style, count, batch })
        -> { ok, results:[{name,label,score,explain:{pieces,method}}], compatibility:{score,label} }
@@ -599,6 +688,7 @@
       if (!raw || !raw.word) continue;
       const w = repair(raw.word);
       const method = raw.method || "Start + end";
+      const order = raw.order || "AB";
       if (!pronounceable(w)) continue;
       if (!validBlend(w, a, b)) continue;
       const key = squash(w);
@@ -662,7 +752,15 @@
         // also come from the substring crossing above.
         if (style === "Funny") patternBonus += 35;
       }
-      const q = score(w, a, b) + filterBonus(w, style, category) + anchor + coverage + concat + patternBonus;
+      // Length penalty: a blend should not balloon past the names it
+      // comes from. Research: the best ship names are 4-8 letters and
+      // about as long as the longer source name. Longer than that, the
+      // result reads as forced (Lialivia, Liamolivi). Penalise every
+      // letter past the longer source name + 1.
+      let lengthPenalty = 0;
+      const maxSrc = Math.max(a.length, b.length);
+      if (w.length > maxSrc + 1) lengthPenalty -= (w.length - (maxSrc + 1)) * 20;
+      const q = score(w, a, b) + filterBonus(w, style, category) + anchor + coverage + concat + patternBonus + lengthPenalty;
       let explain = split
         ? { pieces: cap(split.front) + " + " + split.back, method: split.method }
         : { pieces: null, method: method };
@@ -671,7 +769,7 @@
       if (method === "Echo" && !split) {
         explain = { pieces: cap(w.slice(0, 2)) + " × 2", method: "Echo" };
       }
-      const item = { name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q, explain: explain };
+      const item = { name: cap(w), key: w, score: Math.max(40, Math.min(98, Math.round(q))), q: q, explain: explain, slot: slotKey(w, method, order, a, b, style) };
       // Echo shapes are valid by construction (the repeated chunk is a
       // real nickname sound from a name), so they skip the two-name
       // contribution test. Checked by shape, not by method, because the
@@ -681,13 +779,13 @@
       else if (contributionOk(w, a, b, 4)) loose.push(item);
     }
 
-    // Rank best-first, keep variety, then page so "Generate again" shows
-    // the next tier. Strict names come first; loose names only top up.
+    // Rank best-first, then curate method-first so the 7 results in a
+    // batch come from different slots instead of 7 cuts of one blend.
+    // Strict names come first; loose names only top up.
     scored.sort((x, y) => y.q - x.q);
     loose.sort((x, y) => y.q - x.q);
-    const ranked = diversify(scored).concat(
-      diversify(loose).filter((x) => scored.indexOf(x) === -1)
-    );
+    const full = scored.concat(loose); // every name that passed, best-first
+    const ranked = curate(full);
 
     // Non-overlapping pages: batch N never repeats a name from an earlier
     // batch in the same cycle. Once every name has been shown, the cycle
@@ -695,6 +793,16 @@
     const pages = Math.max(1, Math.ceil(ranked.length / count));
     const pageIdx = batch % pages;
     const page = ranked.slice(pageIdx * count, pageIdx * count + count);
+    // Short batches: a small pool (Noah + Ava) has fewer than 7 distinct
+    // names after the similarity filter. Top the page up from the full
+    // ranked list so the user still gets 7 names; the extras may be
+    // close cousins of a kept name, but a short page is worse.
+    if (page.length < count) {
+      for (const x of full) {
+        if (page.length >= count) break;
+        if (page.indexOf(x) === -1) page.push(x);
+      }
+    }
 
     const results = page.map((x) => ({ name: x.name, label: label, score: x.score, explain: x.explain }));
 
