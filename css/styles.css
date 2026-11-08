@@ -624,6 +624,34 @@ h4 {
   display: none;
 }
 
+/* =========================================================
+   11b. RESULT BOX (tool/game/quiz output)
+   ========================================================= */
+
+.result-box {
+  margin-top: 16px;
+  padding: 18px 20px;
+
+  background: linear-gradient(135deg, #fdf2f5 0%, #fbe9ef 100%);
+  border: 1px solid #f3c9d8;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(224, 86, 127, 0.10);
+}
+
+.result-box:empty {
+  display: none;
+}
+
+.result-box h3 {
+  margin-top: 0;
+
+  color: var(--pink-dark);
+}
+
+.result-box p:last-child {
+  margin-bottom: 0;
+}
+
 
 /* =========================================================
    13. RESULTS
