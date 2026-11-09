@@ -23,8 +23,8 @@
   --pink-light: #fbe9ef;
 
   --text: #000000;
-  --text-light: #000000;
-  --text-muted: #9993a2;
+  --text-light: #44414a;
+  --text-muted: #6e6878;
 
   --radius: 12px;
   --radius-large: 18px;
@@ -260,7 +260,7 @@ h4 {
 }
 
 .btn--primary {
-  background: var(--pink);
+  background: var(--pink-dark);
   color: #fff;
 }
 
@@ -515,6 +515,16 @@ h4 {
   font-weight: 600;
 }
 
+/* Widget titles sit inside .container.prose, where .prose h2
+   (26px, 32px top margin) would otherwise beat this rule.
+   This keeps every panel title at the design-system 20px with
+   no extra top margin. */
+.prose .panel__title {
+  margin: 0 0 20px;
+
+  font-size: 20px;
+}
+
 .panel__title svg {
   width: 20px;
   height: 20px;
@@ -630,8 +640,8 @@ h4 {
 }
 
 .chip.is-selected {
-  background: var(--pink);
-  border-color: var(--pink);
+  background: var(--pink-dark);
+  border-color: var(--pink-dark);
   color: #fff;
 }
 
