@@ -2839,6 +2839,20 @@ body[data-page="blog"]:has(.container.prose) .cta-banner .btn--primary:hover {
 }
 
 @media (max-width: 600px) {
+  /* On phones, result cards wrap: the name and its text get the full
+     width and the buttons drop to their own row, instead of all three
+     buttons squeezing beside the text on one cramped row. */
+  .result-card {
+    flex-wrap: wrap;
+  }
+
+  .result-card__actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+
+    margin-top: 6px;
+  }
+
   body[data-page="blog"]:has(.container.prose) .page-hero {
     padding: 40px 0 32px;
   }
