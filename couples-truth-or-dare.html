@@ -192,7 +192,7 @@
 <p id="todText" style="font-size:1.25rem;font-weight:600;">Tap the button below to reveal your first card.</p>
 </div>
 <p id="todCount">0 of 40 shown</p>
-<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;"><button class="btn btn--primary" type="button" id="todTruth" style="flex:1;min-width:120px;">Truth</button> <button class="btn btn--primary" type="button" id="todDare" style="flex:1;min-width:120px;">Dare</button></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;"><button class="btn btn--primary" type="button" id="todTruth" style="flex:1;min-width:120px;" aria-pressed="true">Truth</button> <button class="btn btn--ghost" type="button" id="todDare" style="flex:1;min-width:120px;" aria-pressed="false">Dare</button></div>
 <p><button class="btn btn--primary btn--block btn--lg" type="button" id="todNext">Show a card</button></p>
 </div>
         <figure class="article-featured">
@@ -339,7 +339,7 @@ const DARES = ["Sing the chorus of your favorite love song to me.", "Give me a t
 function shuffleDeck(a){const d=a.slice();for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=d[i];d[i]=d[j];d[j]=t;}return d;}
 let todMode='truth';let todDeck=shuffleDeck(TRUTHS);let todIdx=0;
 function todShow(){if(todIdx>=todDeck.length){todDeck=shuffleDeck(todMode==='truth'?TRUTHS:DARES);todIdx=0;}document.getElementById('todText').textContent=todDeck[todIdx];document.getElementById('todKind').textContent=todMode==='truth'?'Truth':'Dare';document.getElementById('todCount').textContent=(todIdx+1)+' of '+todDeck.length+' shown';todIdx++;}
-function todSetMode(m){todMode=m;todDeck=shuffleDeck(m==='truth'?TRUTHS:DARES);todIdx=0;document.getElementById('todKind').textContent=m==='truth'?'Truth':'Dare';todShow();}
+function todSetMode(m){todMode=m;todDeck=shuffleDeck(m==='truth'?TRUTHS:DARES);todIdx=0;document.getElementById('todKind').textContent=m==='truth'?'Truth':'Dare';var tB=document.getElementById('todTruth'),dB=document.getElementById('todDare');tB.classList.toggle('btn--primary',m==='truth');tB.classList.toggle('btn--ghost',m!=='truth');tB.setAttribute('aria-pressed',m==='truth');dB.classList.toggle('btn--primary',m==='dare');dB.classList.toggle('btn--ghost',m!=='dare');dB.setAttribute('aria-pressed',m==='dare');todShow();}
 document.getElementById('todNext').addEventListener('click',todShow);
 document.getElementById('todTruth').addEventListener('click',function(){todSetMode('truth');});
 document.getElementById('todDare').addEventListener('click',function(){todSetMode('dare');});
