@@ -472,7 +472,7 @@ h4 {
   border-radius: 50px;
 
   background: var(--pink-light);
-  color: var(--pink-dark);
+  color: #a02850;
 
   font-size: 13px;
   font-weight: 600;
@@ -580,6 +580,7 @@ h4 {
 
 .field__input::placeholder {
   color: var(--text-muted);
+  opacity: 1;
 }
 
 .field__input:focus {
@@ -2640,7 +2641,7 @@ body[data-page="blog"]:has(.container.prose) .article__tag {
   border-radius: 50px;
 
   background: var(--pink-light);
-  color: var(--pink-dark);
+  color: #a02850;
 
   font-size: 12px;
   font-weight: 600;
