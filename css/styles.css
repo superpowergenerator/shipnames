@@ -355,7 +355,6 @@ h4 {
 
 .nav__links a {
   padding: 6px 10px;
-  border-radius: 999px;
 
   color: var(--text-light);
   font-size: 15px;
@@ -365,7 +364,6 @@ h4 {
 
 .nav__links a:hover,
 .nav__links a.is-active {
-  background: var(--pink-light);
   color: var(--pink-dark);
 }
 
@@ -408,19 +406,15 @@ h4 {
 .nav__mobile a {
   padding: 10px 12px;
 
-  border-radius: 8px;
-
   color: var(--text-light);
   font-size: 16px;
 }
 
 .nav__mobile a:hover {
-  background: var(--pink-light);
   color: var(--pink-dark);
 }
 
 .nav__mobile a.is-active {
-  background: var(--pink-light);
   color: var(--pink-dark);
 }
 
