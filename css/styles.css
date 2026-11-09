@@ -2926,3 +2926,91 @@ body[data-page="blog"]:has(.container.prose) .site-header {
   backdrop-filter: blur(10px);
   box-shadow: 0 1px 0 var(--border);
 }
+
+
+/* =========================================================
+   39. SPACING AUDIT FIXES — 2026-11-09
+   Merged from the 4-worker spacing audit. Spacing only: no
+   text, colour, font, or layout changes. All values are on
+   the site's existing scale (12/14/16/24px).
+   ========================================================= */
+
+/* --- Worker 1: tool pages --- */
+
+/* Form error box touched the submit button (0px). 9 tool pages. */
+body[data-page="blog"] .form-error {
+  margin-top: 12px;
+}
+
+/* Marriage score "87 / 100" (~64px) spilled out of its 50px
+   circle. This badge only: 64px circle at 14px bold. */
+#mctScore {
+  width: 64px;
+  height: 64px;
+  font-size: 14px;
+}
+
+/* --- Worker 2: game + quiz pages ---
+   Root cause: the global reset zeroes margins, so any <div>
+   followed by a <p> inside a panel collapsed to a 0px gap.
+   Scoped to data-nav="games" (8 pages) and data-nav="quizzes"
+   (5 pages) only. */
+
+/* Any <div> followed by a <p> inside a game/quiz panel: 0px -> 16px.
+   Covers result-box -> counter text and button-row -> next
+   button on games, and result -> Retake on quizzes. */
+body[data-nav="games"] .panel div + p,
+body[data-nav="quizzes"] .panel div + p {
+  margin-top: 16px;
+}
+
+/* Question/statement/score card -> option-button row (games): 0px -> 16px. */
+body[data-nav="games"] .panel .result-box + div {
+  margin-top: 16px;
+}
+
+/* Quiz question text -> answer options (5 quizzes): 8px -> 16px. */
+body[data-nav="quizzes"] .panel #quizQ {
+  margin-bottom: 16px;
+}
+
+/* Widget panel -> featured image (13 game/quiz pages): 0px -> 24px. */
+body[data-nav="games"] .panel + .article-featured,
+body[data-nav="quizzes"] .panel + .article-featured {
+  margin-top: 24px;
+}
+
+/* --- Worker 3: category pages + blog --- */
+
+/* Category intro (tools/games/quizzes/questions): bare h2/p in a
+   plain .container had zero margins, so heading, paragraphs and
+   card grid all ran together. h2 0px -> 12px, p 0px -> 14px. */
+body[data-page="tools"] .section .container > h2,
+body[data-page="games"] .section .container > h2,
+body[data-page="quizzes"] .section .container > h2,
+body[data-page="questions"] .section .container > h2 {
+  margin-bottom: 12px;
+}
+
+body[data-page="tools"] .section .container > p,
+body[data-page="games"] .section .container > p,
+body[data-page="quizzes"] .section .container > p,
+body[data-page="questions"] .section .container > p {
+  margin-bottom: 14px;
+}
+
+/* Blog "Couple Tools" / "Couple Games" headings sat 8px above
+   their card grids: 8px -> 24px. */
+body[data-page="blog"] .section > .container > h2.section__title {
+  margin-bottom: 24px;
+}
+
+/* Card heading -> card text was 6px, below the 8px scale floor:
+   6px -> 8px (blog + 4 category pages only). */
+body[data-page="blog"] .feature-card.blog-card h3,
+body[data-page="tools"] .feature-card.blog-card h3,
+body[data-page="games"] .feature-card.blog-card h3,
+body[data-page="quizzes"] .feature-card.blog-card h3,
+body[data-page="questions"] .feature-card.blog-card h3 {
+  margin-bottom: 8px;
+}
