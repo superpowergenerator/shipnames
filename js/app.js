@@ -93,7 +93,6 @@
           c.classList.toggle("is-selected", on);
           c.setAttribute("aria-checked", String(on));
         });
-        maybeRegenerate();
       });
     }
 
@@ -124,23 +123,12 @@
           c.classList.toggle("is-selected", on);
           c.setAttribute("aria-checked", String(on));
         });
-        maybeRegenerate();
       });
     }
   }
 
-  // Re-generate immediately when a filter changes, so the user sees the
-  // results update without another click on Generate. Runs whenever both
-  // names are filled in, even before the first generate: on a fresh page
-  // a filter click used to do nothing until Generate was pressed, which
-  // looked broken. Changing a filter changes the request signature, so
-  // handleGenerate resets to the first batch for the new filter.
-  function maybeRegenerate() {
-    const n1 = el("name1"), n2 = el("name2");
-    if (n1 && n2 && n1.value.trim() && n2.value.trim()) {
-      handleGenerate();
-    }
-  }
+  // Filter chips only change the selection. Nothing generates and nothing
+  // scrolls until the user presses Generate.
 
   /* ---------- one-tap example chips ---------- */
 
@@ -168,7 +156,6 @@
       if (n1) n1.value = ex.name1;
       if (n2) n2.value = ex.name2;
       showError("");
-      handleGenerate();
     });
   }
 
