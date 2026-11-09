@@ -159,6 +159,35 @@ h4 {
   text-align: center;
 }
 
+/* "Keep reading" heading on article pages: same treatment as the
+   prose H2s (pink bar underneath), so it does not render as a bare
+   unstyled heading. */
+.section__heading {
+  position: relative;
+
+  margin: 0 0 28px;
+  padding-bottom: 18px;
+
+  border-bottom: 1px solid var(--border);
+
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.section__heading::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+
+  width: 88px;
+  height: 4px;
+
+  background: var(--pink);
+}
+
 .section__eyebrow {
   display: inline-flex;
   align-items: center;
@@ -214,7 +243,6 @@ h4 {
   border: 1px solid transparent;
   border-radius: 50px;
 
-  white-space: nowrap;
 
   font-size: 16px;
   font-weight: 600;
@@ -337,6 +365,7 @@ h4 {
 .nav__cta {
   display: none;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nav__toggle {
