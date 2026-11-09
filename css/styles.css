@@ -337,6 +337,13 @@ h4 {
   height: 30px;
 }
 
+/* The logo is pink hearts on a white square. On the dark footer
+   that white square shows as a tile, so round it into a badge. */
+.site-footer .brand__mark img {
+  border-radius: 50%;
+  background: #fff;
+}
+
 .nav__links {
   display: none;
   align-items: center;
@@ -1719,6 +1726,14 @@ table.data tbody tr:last-child td {
 .prose a {
   color: var(--pink-dark);
   text-decoration: underline;
+}
+
+/* Buttons inside prose content (e.g. the 404 page call-to-action)
+   must keep their white button label: .prose a outranks .btn--primary
+   on specificity, which turned the label pink-on-pink (invisible). */
+.prose a.btn {
+  color: #fff;
+  text-decoration: none;
 }
 
 .note-card {
