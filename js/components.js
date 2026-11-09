@@ -8,7 +8,10 @@
   "use strict";
 
   function setActiveNav() {
-    const active = document.body.getAttribute("data-page") || "";
+    const active =
+      document.body.getAttribute("data-nav") ||
+      document.body.getAttribute("data-page") ||
+      "";
 
     document.querySelectorAll("[data-nav-key]").forEach(function (link) {
       const isActive = link.getAttribute("data-nav-key") === active;
