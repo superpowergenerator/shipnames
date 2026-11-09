@@ -20,7 +20,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <style>
-.dice-face{font-size:4rem;line-height:1}.dice-row{display:flex;gap:16px;justify-content:center}
+.dice-row{display:flex;gap:16px;justify-content:center}
+.die{width:64px;height:64px;padding:10px;background:#fff;border:2px solid var(--border);border-radius:14px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}
+.die span{width:10px;height:10px;border-radius:50%;background:var(--text);place-self:center;visibility:hidden}
+.die[data-value="1"] span:nth-child(5),.die[data-value="3"] span:nth-child(5),.die[data-value="5"] span:nth-child(5){visibility:visible}
+.die[data-value="2"] span:nth-child(1),.die[data-value="2"] span:nth-child(9),.die[data-value="3"] span:nth-child(1),.die[data-value="3"] span:nth-child(9),.die[data-value="4"] span:nth-child(1),.die[data-value="4"] span:nth-child(3),.die[data-value="4"] span:nth-child(7),.die[data-value="4"] span:nth-child(9),.die[data-value="5"] span:nth-child(1),.die[data-value="5"] span:nth-child(3),.die[data-value="5"] span:nth-child(7),.die[data-value="5"] span:nth-child(9),.die[data-value="6"] span:nth-child(1),.die[data-value="6"] span:nth-child(3),.die[data-value="6"] span:nth-child(4),.die[data-value="6"] span:nth-child(6),.die[data-value="6"] span:nth-child(7),.die[data-value="6"] span:nth-child(9){visibility:visible}
   </style>
 
   <!-- Google Analytics -->
@@ -191,7 +195,7 @@
 <h2 class="panel__title" style="justify-content:center;">Roll the dice</h2>
 <p>Tap Roll the dice and let the total pick your prompt.</p>
 <div class="result-box">
-<div class="dice-row"><span class="dice-face" id="die1">&#9856;</span><span class="dice-face" id="die2">&#9856;</span></div>
+<div class="dice-row"><div class="die" id="die1" data-value="1" role="img" aria-label="Die showing 1"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="die" id="die2" data-value="1" role="img" aria-label="Die showing 1"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
 <p id="diceTotal" style="font-size:1.25rem;font-weight:600;">Total: tap Roll to begin</p>
 <p id="dicePrompt">Your prompt will show here after you roll.</p>
 </div>
@@ -337,8 +341,7 @@
 
 <script>
 const DICE_PROMPTS = {"2": "Tell your partner one thing you love about them, and say why it matters to you.", "3": "Share a happy memory from the last month, and relive it together for a minute.", "4": "Give your partner a warm hug that lasts a full ten seconds.", "5": "Plan a small surprise for your partner this week, and write down one idea now.", "6": "Take turns naming three things you are grateful for about each other.", "7": "Dance together for one song, even if you have to hum the tune yourselves.", "8": "Cook or order a favorite snack together and share it like a tiny picnic.", "9": "Tell your partner about a dream trip you would love to take together.", "10": "Write a one line love note for your partner and read it out loud.", "11": "Pick a photo of the two of you and tell the story behind it.", "12": "Plan your next date night right now, and pick the day together."};
-const DICE_FACES=['\u2680','\u2681','\u2682','\u2683','\u2684','\u2685'];
-function diceRoll(){const d1=Math.floor(Math.random()*6)+1;const d2=Math.floor(Math.random()*6)+1;const total=d1+d2;document.getElementById('die1').textContent=DICE_FACES[d1-1];document.getElementById('die2').textContent=DICE_FACES[d2-1];document.getElementById('diceTotal').textContent='Total: '+total+' ('+d1+' + '+d2+')';document.getElementById('dicePrompt').textContent=DICE_PROMPTS[String(total)];}
+function diceRoll(){const d1=Math.floor(Math.random()*6)+1;const d2=Math.floor(Math.random()*6)+1;const total=d1+d2;var die1El=document.getElementById('die1');var die2El=document.getElementById('die2');die1El.dataset.value=d1;die2El.dataset.value=d2;die1El.setAttribute('aria-label','Die showing '+d1);die2El.setAttribute('aria-label','Die showing '+d2);document.getElementById('diceTotal').textContent='Total: '+total+' ('+d1+' + '+d2+')';document.getElementById('dicePrompt').textContent=DICE_PROMPTS[String(total)];}
 document.getElementById('diceRoll').addEventListener('click',diceRoll);
 </script>
   <script src="js/icons.js"></script>

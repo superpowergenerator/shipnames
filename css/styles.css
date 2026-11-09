@@ -199,7 +199,7 @@ h4 {
   border-radius: 50px;
 
   background: var(--pink-light);
-  color: var(--pink-dark);
+  color: #a02850;
 
   font-size: 13px;
   font-weight: 600;
@@ -1221,7 +1221,7 @@ table.data tbody tr:last-child td {
   margin-bottom: 12px;
 
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
 
   border-radius: var(--radius);
 
@@ -1242,7 +1242,7 @@ table.data tbody tr:last-child td {
   border-radius: 50px;
 
   background: var(--pink-light);
-  color: var(--pink-dark);
+  color: #a02850;
 
   font-size: 12px;
   font-weight: 600;
@@ -1257,7 +1257,7 @@ table.data tbody tr:last-child td {
   margin-top: auto;
   padding-top: 10px;
 
-  color: var(--pink-dark);
+  color: #a02850;
 
   font-size: 14px;
   font-weight: 600;
@@ -2927,6 +2927,13 @@ body[data-page="blog"]:has(.container.prose) .cta-banner .btn--primary:hover {
   body[data-page="blog"]:has(.container.prose) .prose > p:first-of-type {
     font-size: 18px;
   }
+
+  /* This-or-that option buttons: side by side on a phone they squeeze
+     long labels onto two lines, so each option takes its own row. */
+  #totA,
+  #totB {
+    flex: 1 1 100%;
+  }
 }
 
 /* Sticky header: frosted like the homepage, so page text never
@@ -3023,4 +3030,27 @@ body[data-page="games"] .feature-card.blog-card h3,
 body[data-page="quizzes"] .feature-card.blog-card h3,
 body[data-page="questions"] .feature-card.blog-card h3 {
   margin-bottom: 8px;
+}
+
+/* --- Batch 2 + 3 visual-check fixes (2026-11-09) --- */
+
+/* Category hero intro (tools/games/quizzes/questions): the 16px text
+   in a narrow 550px column read small and light on desktop, so it
+   matches the article hero: 17px in a 640px column. */
+body[data-page="tools"] .page-hero p,
+body[data-page="games"] .page-hero p,
+body[data-page="quizzes"] .page-hero p,
+body[data-page="questions"] .page-hero p {
+  max-width: 640px;
+
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* Quiz options are injected by JS after first paint, so the panel
+   starts empty and everything below it jumps when the four answer
+   buttons appear (CLS ~0.2). Reserve the space up front; the area
+   still grows if the options wrap taller. */
+body[data-nav="quizzes"] #quizOpts {
+  min-height: 232px;
 }
